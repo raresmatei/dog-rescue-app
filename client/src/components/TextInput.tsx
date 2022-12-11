@@ -1,12 +1,11 @@
 import { extendTheme, Input, NativeBaseProvider } from 'native-base';
 import React from 'react';
 
-const TextInput = ({ placeholder }) => {
+const TextInput = ({ placeholder, type }) => {
     const theme = extendTheme({
         components: {
             Input: {
                 defaultProps: {
-                    width: 200,
                     borderRadius: 7,
                     borderColor: '#000000',
                     fontSize: 17,
@@ -21,7 +20,7 @@ const TextInput = ({ placeholder }) => {
 
     return (
         <NativeBaseProvider theme={theme}>
-            <Input variant="rounded" placeholder={placeholder} />
+            <Input variant="rounded" type={type} placeholder={placeholder} />
         </NativeBaseProvider>
     );
 };

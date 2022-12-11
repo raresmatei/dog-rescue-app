@@ -1,10 +1,11 @@
 import { StyleSheet, Text, View } from 'react-native';
 import LandingScreen from './src/views/LandingScreen';
+import RegisterScreen from './src/views/RegisterScreen';
 
 export default function App() {
     return (
         <View style={styles.container}>
-            <LandingScreen/>
+            <RegisterScreen />
         </View>
     );
 }

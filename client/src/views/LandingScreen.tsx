@@ -2,12 +2,13 @@ import React from 'react';
 import { Button, Image, StyleSheet, Text, View } from 'react-native';
 import icon from '../../assets/doggy.png';
 import BasicButton from '../components/Button';
+import Header from '../components/Header';
 import TextInput from '../components/TextInput';
 
 const LandingScreen = () => {
     return (
         <View style={styles.view}>
-            <Text style={styles.text}>ADOPT A DOG</Text>
+            <Header title='ADOPT A DOG'/>
             <Image style={styles.image} source={icon} />
             <View style={styles.inputView}>
                 <TextInput placeholder="username" />
