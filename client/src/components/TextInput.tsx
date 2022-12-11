@@ -1,13 +1,13 @@
 import { extendTheme, Input, NativeBaseProvider } from 'native-base';
 import React from 'react';
 
-const TextInput = ({placeholder}) => {
+const TextInput = ({ placeholder }) => {
     const theme = extendTheme({
         components: {
             Input: {
                 defaultProps: {
                     width: 200,
-                    borderRadius: 10,
+                    borderRadius: 7,
                     borderColor: '#000000',
                     fontSize: 17,
                     backgroundColor: '#F1F1F1',
