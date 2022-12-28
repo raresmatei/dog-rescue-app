@@ -5,11 +5,77 @@ import TextInput from '../components/TextInput';
 import { NativeBaseProvider, Radio } from 'native-base';
 import BasicButton from '../components/Button';
 import { JsxElement } from 'typescript';
+import axios from 'axios';
 
 const RegisterScreen = () => {
-    const [user, setUser] = React.useState('user');
-    const [error, setErrorr] = useState(false);
+    const [error, setError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('message');
+    const [registerFields, setRegisterFields] = useState({
+        role: 'user',
+        name: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+        city: '',
+        street: '',
+        number: '',
+    });
+
+    const handleChangeRole = (value) => {
+        setRegisterFields({
+            ...registerFields,
+            role: value,
+        });
+    };
+
+    const handleChangeName = (value) => {
+        setRegisterFields({
+            ...registerFields,
+            name: value,
+        });
+    };
+
+    const handleChangeEmail = (value) => {
+        setRegisterFields({
+            ...registerFields,
+            email: value,
+        });
+    };
+
+    const handleChangePassword = (value) => {
+        setRegisterFields({
+            ...registerFields,
+            password: value,
+        });
+    };
+
+    const handleChangeConfirmPassword = (value) => {
+        setRegisterFields({
+            ...registerFields,
+            confirmPassword: value,
+        });
+    };
+
+    const handleChangeCity = (value) => {
+        setRegisterFields({
+            ...registerFields,
+            city: value,
+        });
+    };
+
+    const handleChangeStreet = (value) => {
+        setRegisterFields({
+            ...registerFields,
+            street: value,
+        });
+    };
+
+    const handleChangeNumber = (value) => {
+        setRegisterFields({
+            ...registerFields,
+            number: value,
+        });
+    };
 
     const _renderHeader = () => {
         return (
@@ -22,9 +88,19 @@ const RegisterScreen = () => {
     const _renderEmailPassword = (): JSX.Element => {
         return (
             <View style={{ height: 150 }}>
-                <TextInput style={styles.input} placeholder="email" type="normal" />
-                <TextInput style={styles.input} placeholder="password" type="password" />
-                <TextInput style={styles.input} placeholder="confirm password" type="password" />
+                <TextInput onChange={handleChangeEmail} style={styles.input} placeholder="email" type="normal" />
+                <TextInput
+                    onChange={handleChangePassword}
+                    style={styles.input}
+                    placeholder="password"
+                    type="password"
+                />
+                <TextInput
+                    onChange={handleChangeConfirmPassword}
+                    style={styles.input}
+                    placeholder="confirm password"
+                    type="password"
+                />
             </View>
         );
     };
@@ -46,10 +122,10 @@ const RegisterScreen = () => {
 
                 <Radio.Group
                     name="myRadioGroup"
-                    value={user}
+                    value={registerFields.role}
                     style={{ marginBottom: 15 }}
                     onChange={(nextValue) => {
-                        setUser(nextValue);
+                        handleChangeRole(nextValue);
                     }}
                 >
                     <View
@@ -76,7 +152,7 @@ const RegisterScreen = () => {
     const _renderUserFields = () => {
         return (
             <View style={{ height: 50 }}>
-                <TextInput style={styles.input} placeholder="full name" type="normal" />
+                <TextInput onChange={handleChangeName} style={styles.input} placeholder="full name" type="normal" />
             </View>
         );
     };
@@ -84,19 +160,48 @@ const RegisterScreen = () => {
     const _renderAdminFields = () => {
         return (
             <View style={{ height: 200 }}>
-                <TextInput style={styles.input} placeholder="shelter name" type="normal" />
-                <TextInput style={styles.input} placeholder="city" type="normal" />
-                <TextInput style={styles.input} placeholder="street" type="normal" />
-                <TextInput style={styles.input} placeholder="number" type="normal" />
+                <TextInput onChange={handleChangeName} style={styles.input} placeholder="shelter name" type="normal" />
+                <TextInput onChange={handleChangeCity} style={styles.input} placeholder="city" type="normal" />
+                <TextInput onChange={handleChangeStreet} style={styles.input} placeholder="street" type="normal" />
+                <TextInput onChange={handleChangeNumber} style={styles.input} placeholder="number" type="normal" />
             </View>
         );
     };
 
-    const _renderError = (errorMessage) =>{
-        return (
-            <Text style={styles.errorLabel}>{errorMessage}</Text>
-        )
-    }
+    const _renderError = (errorMessage) => {
+        return <Text style={styles.errorLabel}>{errorMessage}</Text>;
+    };
+
+    const onSubmit = async () => {
+        if (
+            registerFields.name === '' ||
+            registerFields.email === '' ||
+            registerFields.password === '' ||
+            registerFields.confirmPassword === ''
+        ) {
+            alert('please fill in all fields');
+            return;
+        }
+
+        if (
+            registerFields.role === 'admin' &&
+            (registerFields.city === '' || registerFields.street === '' || registerFields.number === '')
+        ) {
+            alert('please fill in all fields');
+            return;
+        }
+
+        const resp = await axios.post('http://localhost:8000/api/signup', registerFields);
+        console.log(JSON.stringify(resp.data));
+
+        if (resp.data.error) {
+            setError(true);
+            setErrorMessage(resp.data.error);
+        } else {
+            setError(false);
+            setErrorMessage('');
+        }
+    };
 
     return (
         <NativeBaseProvider>
@@ -104,10 +209,10 @@ const RegisterScreen = () => {
                 <ScrollView style={styles.view}>
                     {_renderHeader()}
                     {_renderUserTypeSelect()}
-                    {user === 'user' ? _renderUserFields() : _renderAdminFields()}
+                    {registerFields.role === 'user' ? _renderUserFields() : _renderAdminFields()}
                     {_renderEmailPassword()}
                     {error ? _renderError(errorMessage) : <></>}
-                    <BasicButton style={[styles.button, styles.registerButton]} title="REGISTER" />
+                    <BasicButton onClick={onSubmit} style={[styles.button, styles.registerButton]} title="REGISTER" />
                 </ScrollView>
             </SafeAreaView>
         </NativeBaseProvider>
@@ -134,8 +239,8 @@ const styles = StyleSheet.create({
     input: {
         height: 35,
     },
-    errorLabel:{
+    errorLabel: {
         color: 'red',
         fontSize: 20,
-    }
+    },
 });

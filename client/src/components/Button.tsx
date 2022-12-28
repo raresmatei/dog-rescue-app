@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, NativeBaseProvider } from 'native-base';
 import { StyleSheet, Text } from 'react-native';
 
-const BasicButton = ({ title, style }) => {
+const BasicButton = ({ title, style, onClick }) => {
     const styles = StyleSheet.create({
         button: {
             fontSize: 44,
@@ -15,7 +15,7 @@ const BasicButton = ({ title, style }) => {
     });
     return (
         <NativeBaseProvider>
-            <Button style={style}>
+            <Button style={style} onPress={onClick}>
                 <Text style={styles.text}>{title}</Text>
             </Button>
         </NativeBaseProvider>

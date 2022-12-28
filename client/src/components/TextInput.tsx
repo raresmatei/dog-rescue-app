@@ -1,7 +1,14 @@
 import { extendTheme, Input, NativeBaseProvider } from 'native-base';
 import React from 'react';
 
-const TextInput = ({ placeholder, type, style }) => {
+interface TextInputProperties {
+    placeholder: string;
+    type: any;
+    style: object;
+    onChange?: Function;
+}
+
+const TextInput = ({ placeholder, type, style, onChange}: TextInputProperties) => {
     const theme = extendTheme({
         components: {
             Input: {
@@ -20,7 +27,15 @@ const TextInput = ({ placeholder, type, style }) => {
 
     return (
         <NativeBaseProvider theme={theme}>
-            <Input autoCorrect={false} autoCapitalize='none' style={style} variant="rounded" type={type} placeholder={placeholder} />
+            <Input
+                onChangeText={(value) => onChange(value)}
+                autoCorrect={false}
+                autoCapitalize="none"
+                style={style}
+                variant="rounded"
+                type={type}
+                placeholder={placeholder}
+            />
         </NativeBaseProvider>
     );
 };

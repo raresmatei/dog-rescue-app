@@ -11,8 +11,8 @@ const LandingScreen = () => {
             <Header title='ADOPT A DOG'/>
             <Image style={styles.image} source={icon} />
             <View style={styles.inputView}>
-                <TextInput placeholder="username" />
-                <TextInput placeholder="password" />
+                <TextInput style={{}} type="normal" placeholder="username" />
+                <TextInput style={{}} type="password" placeholder="password" />
             </View>
             <View style={styles.buttonsView}>
                 <BasicButton style={[styles.button, styles.loginButton]} title="LOGIN" />
