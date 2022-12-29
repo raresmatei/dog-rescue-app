@@ -51,7 +51,17 @@ app.get('/dogImage/:dogId', async (req, res) =>{
     } catch (error) {
         res.send("not found");
     }
-})
+});
+
+app.delete('/dogImage/:dogId', async (req, res) => {
+    try {
+        const file = await ImageModel.deleteOne({ dogId: req.params.dogId });
+        console.log(file);
+        res.send('deleted successfuly image');
+    } catch (error) {
+        res.send('not found');
+    }
+});
 
 //------
 
