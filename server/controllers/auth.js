@@ -1,7 +1,7 @@
 import User from '../models/user';
 import { hashPassword, comparePassword } from '../helpers/auth';
 import jwt from 'jsonwebtoken';
-import {client} from '../index';
+import { client } from '../index';
 
 require('dotenv').config();
 
@@ -27,13 +27,13 @@ export const signup = async (req, res) => {
                 error: 'Password is required and should be 6 characters long',
             });
         }
-        if(password !== confirmPassword){
+        if (password !== confirmPassword) {
             return res.json({
                 error: "Passwords don't match ",
-            })
+            });
         }
         console.log('here');
-        const exist = await client.db('db').collection('users').findOne({ email });;
+        const exist = await client.db('db').collection('users').findOne({ email });
         console.log('exist: ', exist);
         if (exist) {
             return res.json({
@@ -43,7 +43,10 @@ export const signup = async (req, res) => {
         // hash password
         const hashedPassword = await hashPassword(password);
         try {
-            const user = await client.db('db').collection('users').insertOne(req.body);
+            const user = await client
+                .db('db')
+                .collection('users')
+                .insertOne({ name, email, password: hashedPassword, city, street, number });
 
             console.log('user:', user);
 
@@ -70,7 +73,7 @@ export const signin = async (req, res) => {
     try {
         const { email, password } = req.body;
         // check if our db has user with that email
-        const user = await User.findOne({ email });
+        const user = await client.db('db').collection('users').findOne({ email });
         if (!user) {
             return res.json({
                 error: 'No user found',

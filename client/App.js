@@ -1,21 +1,25 @@
-import { StyleSheet, Text, View } from 'react-native';
-import LandingScreen from './src/views/LandingScreen';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { StyleSheet } from 'react-native';
+import HomeScreen from './src/views/HomeScreen';
+import LoginScreen from './src/views/LoginScreen';
 import RegisterScreen from './src/views/RegisterScreen';
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
     return (
-        <View style={styles.container}>
-            <RegisterScreen />
-        </View>
+        <NavigationContainer>
+            <Stack.Navigator
+                initialRouteName="HomeScreen"
+                screenOptions={{
+                    headerShown: false,
+                }}
+            >
+                <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
+                <Stack.Screen name="LoginScreen" component={LoginScreen} />
+                <Stack.Screen name="HomeScreen" component={HomeScreen}/>
+            </Stack.Navigator>
+        </NavigationContainer>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        paddingTop: 40,
-        flex: 1,
-        backgroundColor: '#E5E5E5',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-});

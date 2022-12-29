@@ -1,15 +1,15 @@
 import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
-import React, { ReactElement, useState } from 'react';
+import React, { useState } from 'react';
 import Header from '../components/Header';
 import TextInput from '../components/TextInput';
 import { NativeBaseProvider, Radio } from 'native-base';
 import BasicButton from '../components/Button';
-import { JsxElement } from 'typescript';
 import axios from 'axios';
+import globalStyles from '../globalStyles/styles';
 
-const RegisterScreen = () => {
+const RegisterScreen = ({ navigation }) => {
     const [error, setError] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('message');
+    const [errorMessage, setErrorMessage] = useState('');
     const [registerFields, setRegisterFields] = useState({
         role: 'user',
         name: '',
@@ -200,22 +200,39 @@ const RegisterScreen = () => {
         } else {
             setError(false);
             setErrorMessage('');
+            navigation.navigate('HomeScreen');
         }
     };
 
+    const onLoginClickHandle = () => {
+        navigation.navigate('LoginScreen');
+    };
+
     return (
-        <NativeBaseProvider>
-            <SafeAreaView>
-                <ScrollView style={styles.view}>
-                    {_renderHeader()}
-                    {_renderUserTypeSelect()}
-                    {registerFields.role === 'user' ? _renderUserFields() : _renderAdminFields()}
-                    {_renderEmailPassword()}
-                    {error ? _renderError(errorMessage) : <></>}
-                    <BasicButton onClick={onSubmit} style={[styles.button, styles.registerButton]} title="REGISTER" />
-                </ScrollView>
-            </SafeAreaView>
-        </NativeBaseProvider>
+        <View style={globalStyles.container}>
+            <NativeBaseProvider>
+                <SafeAreaView>
+                    <ScrollView style={styles.view}>
+                        {_renderHeader()}
+                        {_renderUserTypeSelect()}
+                        {registerFields.role === 'user' ? _renderUserFields() : _renderAdminFields()}
+                        {_renderEmailPassword()}
+                        {error ? _renderError(errorMessage) : <></>}
+                        <BasicButton
+                            onClick={onSubmit}
+                            style={[styles.button, styles.registerButton]}
+                            title="REGISTER"
+                        />
+                        <Text style={styles.loginLabel}>Login if you already have an account</Text>
+                        <BasicButton
+                            onClick={onLoginClickHandle}
+                            style={[styles.button, styles.loginButton]}
+                            title="LOGIN"
+                        />
+                    </ScrollView>
+                </SafeAreaView>
+            </NativeBaseProvider>
+        </View>
     );
 };
 
@@ -242,5 +259,14 @@ const styles = StyleSheet.create({
     errorLabel: {
         color: 'red',
         fontSize: 20,
+    },
+    loginButton: {
+        backgroundColor: '#6B62FF',
+    },
+    loginLabel: {
+        marginBottom: 15,
+        marginTop: 20,
+        fontSize: 17,
+        // width: 300,
     },
 });
