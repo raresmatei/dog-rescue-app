@@ -1,5 +1,5 @@
 import { Box, HamburgerIcon, Menu, NativeBaseProvider } from 'native-base';
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { Pressable, Image, StyleSheet, Text, View } from 'react-native';
 import userIcon from '../../assets/icons8-user-50.png';
 import { AuthContext } from '../context/auth';
@@ -47,7 +47,7 @@ const Navbar = () => {
                     trigger={(triggerProps) => {
                         return (
                             <Pressable accessibilityLabel="More options menu" {...triggerProps}>
-                                <Image style={{width: 45, height: 45}} source={userIcon} />
+                                <Image style={{ width: 45, height: 45 }} source={userIcon} />
                             </Pressable>
                         );
                     }}
@@ -58,8 +58,8 @@ const Navbar = () => {
                     <Menu.Item>
                         <Text style={styles.menuItem}>my adoptions</Text>
                     </Menu.Item>
-                    <Menu.Item>
-                        <Text onPress={()=>setState({...state, password: '', user: null, token: ''})} style={styles.menuItem}>log out</Text>
+                    <Menu.Item onPress={() => setState({ ...state, user: null, token: '' })}>
+                        <Text style={styles.menuItem}>log out</Text>
                     </Menu.Item>
                 </Menu>
             </Box>

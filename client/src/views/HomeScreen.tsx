@@ -41,7 +41,7 @@ const HomeScreen = () => {
                         }, '')
                     );
                     const name = singleData.name;
-                    return <DogCard key={index} name={name} image={{ uri: `data:image/png;base64,${base64String}` }} />;
+                    return <DogCard dogId={singleData._id} key={index} name={name} image={{ uri: `data:image/png;base64,${base64String}` }} />;
                 })}
             </View>
         );

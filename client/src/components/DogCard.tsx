@@ -1,13 +1,37 @@
 import { FavouriteIcon, NativeBaseProvider } from 'native-base';
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Card, Icon, Button } from 'react-native-elements';
-import doggy from '../../assets/dog.png';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import Animated, { Extrapolate, interpolate, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import Animated, {
+    Extrapolate,
+    interpolate,
+    useAnimatedStyle,
+    useSharedValue,
+    withSpring,
+} from 'react-native-reanimated';
+import axios from 'axios';
+import { AuthContext } from '../context/auth';
 
-const LikeButton = () => {
+const LikeButton = ({ dogId }) => {
     const liked = useSharedValue(0);
+    const [state, setState] = useContext(AuthContext);
+
+    useEffect(() => {
+        getLikedValue();
+    }, []);
+
+    const getLikedValue = async () => {
+        const request = `http://localhost:8000/savedDogs/${state.user._id}/${dogId}`;
+        const isLiked = await axios.get(request);
+
+        if(isLiked.data){
+            liked.value = 1;
+        }
+        else{
+            liked.value = 0;
+        }
+    };
 
     const outlineStyle = useAnimatedStyle(() => {
         return {
@@ -29,8 +53,23 @@ const LikeButton = () => {
         };
     });
 
+    const handleOnClickLikeButton = async () => {
+        const body = {
+            userId: state.user._id,
+            dogId: dogId,
+        };
+        if (liked.value == 0) {
+            await axios.post('http://localhost:8000/savedDogs', body);
+        }
+        if (liked.value == 1) {
+            const deleteRequest = `http://localhost:8000/savedDogs/${body.userId}/${body.dogId}`;
+            await axios.delete(deleteRequest);
+        }
+        liked.value = withSpring(liked.value ? 0 : 1);
+    };
+
     return (
-        <Pressable style={styles.favoriteIcon} onPress={() => (liked.value = withSpring(liked.value ? 0 : 1))}>
+        <Pressable style={styles.favoriteIcon} onPress={handleOnClickLikeButton}>
             <Animated.View style={[StyleSheet.absoluteFillObject, outlineStyle]}>
                 <MaterialCommunityIcons name={'heart-outline'} size={32} color={'black'} />
             </Animated.View>
@@ -42,17 +81,18 @@ const LikeButton = () => {
     );
 };
 
-const DogCard = ({name, image}) => {
+const DogCard = ({ name, image, dogId }) => {
     // const [liked, setLiked] = useState(false);
-
-    
 
     return (
         <NativeBaseProvider>
             <Card containerStyle={styles.card}>
-                <Card.Image style={{ width: '100%', height: 270, borderTopRightRadius: 6, borderTopLeftRadius: 6 }} source={image} />
+                <Card.Image
+                    style={{ width: '100%', height: 270, borderTopRightRadius: 6, borderTopLeftRadius: 6 }}
+                    source={image}
+                />
                 <View style={styles.labelView}>
-                    <LikeButton/>
+                    <LikeButton dogId={dogId} />
                     <Text style={{ fontSize: 18 }}>{name}</Text>
                 </View>
             </Card>

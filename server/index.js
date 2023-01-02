@@ -2,19 +2,18 @@ require('dotenv').config();
 import express from 'express';
 import cors from 'cors';
 import authRoutes from './routes/auth';
+import savedDogsRoutes from './routes/savedDogs';
 const morgan = require('morgan');
 const connectionImageDb = require('./imagedb');
 import { ImageModel } from './models/image.model';
 import multer from 'multer';
-const bodyParser = require('body-parser');
 const fs = require('fs');
-import { encode as btoa } from 'base-64';
+import savedDogs from './models/savedDogs';
 
 const app = express();
 
-app.use(bodyParser.json());
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(morgan('dev'));
 
@@ -51,23 +50,21 @@ app.post('/dogs', upload.single('testImage'), (req, res) => {
 });
 
 app.get('/dogs', async (req, res) => {
-    try{
+    try {
         const allData = await ImageModel.find();
 
         res.json(allData);
-    }
-    catch(err){
+    } catch (err) {
         console.log('err : ', err);
     }
 });
 
-
-app.get('/dogImage/:dogId', async (req, res) =>{
-        try {
+app.get('/dogImage/:dogId', async (req, res) => {
+    try {
         const file = await ImageModel.findOne({ dogId: req.params.dogId });
         res.send(file.image.data);
     } catch (error) {
-        res.send("not found");
+        res.send('not found');
     }
 });
 
@@ -83,4 +80,5 @@ app.delete('/dogImage/:dogId', async (req, res) => {
 
 // route middlewares
 app.use('/api', authRoutes);
+app.use('/savedDogs', savedDogsRoutes);
 app.listen(8000, console.log('Server running on port 8000'));
