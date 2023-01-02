@@ -8,7 +8,7 @@ const connectionImageDb = require('./imagedb');
 import { ImageModel } from './models/image.model';
 import multer from 'multer';
 const fs = require('fs');
-import savedDogs from './models/savedDogs';
+import { decode as atob, encode as btoa } from 'base-64';
 
 const app = express();
 
@@ -31,15 +31,27 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 app.post('/dogs', upload.single('testImage'), (req, res) => {
-    const saveImage = ImageModel({
+    // const saveImage = ImageModel({
+    //     name: req.body.name,
+    //     img: {
+    //         data: fs.readFileSync('uploads/' + req.file.filename),
+    //         contentType: 'image/png',
+    //     },
+    // });
+    const buffer = fs.readFileSync('uploads/' + req.file.filename);
+    const base64String = btoa(
+        new Uint8Array(buffer).reduce(function (data, byte) {
+            return data + String.fromCharCode(byte);
+        }, '')
+    );
+
+    const dog = ImageModel({
         name: req.body.name,
-        img: {
-            data: fs.readFileSync('uploads/' + req.file.filename),
-            contentType: 'image/png',
-        },
+        base64StringImage: base64String,
     });
-    saveImage
-        .save()
+
+    console.log('base 64 string: ', base64String);
+    dog.save()
         .then((res) => {
             console.log('image is saved');
         })

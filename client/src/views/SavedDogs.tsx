@@ -14,8 +14,6 @@ const HomeScreen = ({ navigation }) => {
     const [dogs, setDogs] = useState([]);
     const isFocused = useIsFocused();
     
-    console.log(isFocused);
-
     useEffect(() => {
         if (isFocused) {
             fetchDogs();
@@ -27,15 +25,16 @@ const HomeScreen = ({ navigation }) => {
             const request = `http://localhost:8000/savedDogs/${state.user._id}`;
             const result = await axios.get(request);
 
-            const promises = result.data.map(async (el) => {
+            const promises = result.data.map( (el) => {
                 const request = `http://localhost:8000/dogImage/${el.dogId}`;
 
-                return await axios.get(request);
+                return axios.get(request);
             });
 
             const savedDogs = await Promise.all(promises);
 
             const mappedToDataDogs = savedDogs.map((el) => el.data);
+
 
             setSavedDogs(mappedToDataDogs);
         } catch (err) {
@@ -55,18 +54,14 @@ const HomeScreen = ({ navigation }) => {
         return (
             <View style={styles.dogsView}>
                 {savedDogs.map((singleData, index) => {
-                    const base64String = btoa(
-                        new Uint8Array(singleData.img.data.data).reduce(function (data, byte) {
-                            return data + String.fromCharCode(byte);
-                        }, '')
-                    );
+
                     const name = singleData.name;
                     return (
                         <DogCard
                             dogId={singleData._id}
                             key={index}
                             name={name}
-                            image={{ uri: `data:image/png;base64,${base64String}` }}
+                            image={{ uri: `data:image/png;base64,${singleData.base64StringImage}` }}
                         />
                     );
                 })}

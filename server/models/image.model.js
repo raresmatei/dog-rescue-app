@@ -5,10 +5,11 @@ const imageSchema = new mongoose.Schema({
     breed: String,
     age: Number,
     temper: String,
-    img: {
-        data: Buffer,
-        contentType: String,
-    },
+    // img: {
+    //     data: Buffer,
+    //     contentType: String,
+    // },
+    base64StringImage : String,
 });
 
 // module.exports= ImageModel = mongoose.model('imageModel', imageSchema);

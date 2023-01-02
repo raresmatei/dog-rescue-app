@@ -34,13 +34,15 @@ const HomeScreen = ({navigation}) => {
         return (
             <View style={styles.dogsView}>
                 {data.map((singleData, index) => {
-                    const base64String = btoa(
-                        new Uint8Array(singleData.img.data.data).reduce(function (data, byte) {
-                            return data + String.fromCharCode(byte);
-                        }, '')
-                    );
                     const name = singleData.name;
-                    return <DogCard dogId={singleData._id} key={index} name={name} image={{ uri: `data:image/png;base64,${base64String}` }} />;
+                    return (
+                        <DogCard
+                            dogId={singleData._id}
+                            key={index}
+                            name={name}
+                            image={{ uri: `data:image/png;base64,${singleData.base64StringImage}` }}
+                        />
+                    );
                 })}
             </View>
         );
