@@ -44,7 +44,6 @@ const LoginScreen = ({ navigation }) => {
         }
 
         const resp = await axios.post('http://localhost:8000/api/signin', loginFields);
-        console.log(JSON.stringify(resp.data));
 
         if (resp.data.error) {
             setError(true);

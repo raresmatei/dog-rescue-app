@@ -54,10 +54,6 @@ app.get('/dogs', async (req, res) => {
     try{
         const allData = await ImageModel.find();
 
-        // console.log('all data:' ,allData[0].img.data);
-        //  const base64String = btoa(String.fromCharCode(...new Uint8Array(allData[0].img.data)));
-        //  console.log('base 64 str: ', base64String);
-
         res.json(allData);
     }
     catch(err){
@@ -84,27 +80,6 @@ app.delete('/dogImage/:dogId', async (req, res) => {
         res.send('not found');
     }
 });
-
-//------
-
-const { MongoClient, ServerApiVersion } = require('mongodb');
-const uri = process.env.DATABASE;
-const client = new MongoClient(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    serverApi: ServerApiVersion.v1,
-});
-client
-    .connect()
-    .then(() => console.log('db connected'))
-    .catch((err) => {
-        console.log('db error: ', err);
-        // perform actions on the collection object
-        client.close();
-    });
-
-export { client };
-
 
 // route middlewares
 app.use('/api', authRoutes);

@@ -195,7 +195,6 @@ const RegisterScreen = ({ navigation }) => {
         }
 
         const resp = await axios.post('http://localhost:8000/api/signup', registerFields);
-        console.log(JSON.stringify(resp.data));
 
         if (resp.data.error) {
             setError(true);

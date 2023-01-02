@@ -17,7 +17,6 @@ const NavaigationScreen = () => {
 
     const authenticated = state && state.token !== '' && state.user !== null;
 
-    console.log('authenticated: ', authenticated);
     return (
         <Stack.Navigator
             initialRouteName="HomeScreen"
