@@ -1,9 +1,11 @@
 import { Box, HamburgerIcon, Menu, NativeBaseProvider } from 'native-base';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Pressable, Image, StyleSheet, Text, View } from 'react-native';
 import userIcon from '../../assets/icons8-user-50.png';
+import { AuthContext } from '../context/auth';
 
 const Navbar = () => {
+    const [state, setState] = useContext(AuthContext);
 
     const _renderMenu = () => {
         return (
@@ -57,7 +59,7 @@ const Navbar = () => {
                         <Text style={styles.menuItem}>my adoptions</Text>
                     </Menu.Item>
                     <Menu.Item>
-                        <Text style={styles.menuItem}>log out</Text>
+                        <Text onPress={()=>setState({...state, password: '', user: null, token: ''})} style={styles.menuItem}>log out</Text>
                     </Menu.Item>
                 </Menu>
             </Box>

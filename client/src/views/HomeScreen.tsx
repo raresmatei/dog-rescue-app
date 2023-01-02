@@ -5,13 +5,14 @@ import DogCard from '../components/DogCard';
 import Header from '../components/Header';
 import Navbar from '../components/Navbar';
 import { decode as atob, encode as btoa } from 'base-64';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const HomeScreen = () => {
     const [data, setData] = useState([]);
     useEffect(() => {
         fetchDogs();
     }, []);
-
+    
     const fetchDogs = async () => {
         try {
             const result = await axios.get('http://localhost:8000/dogs');

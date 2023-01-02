@@ -54,7 +54,7 @@ const LoginScreen = ({ navigation }) => {
             setErrorMessage('');
             setState(resp.data);
 
-            await AsyncStorage.setItem('auth-rn', JSON.stringify(resp.data));
+            await AsyncStorage.setItem("auth-rn", JSON.stringify(resp.data));
 
             navigation.navigate('HomeScreen');
         }
