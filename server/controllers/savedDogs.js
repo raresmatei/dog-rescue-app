@@ -16,14 +16,17 @@ export const saveDog = async (req, res) => {
 };
 
 export const getSavedDogByUserId = async(req, res)=>{
+    console.log(req.params);
     const {userId} = req.params;
 
     try {
         const dogs = await SavedDog.find({userId});
 
+        console.log('dogs: ', dogs);
+
         res.send(dogs);
     } catch (error) {
-        console.log(error);
+        console.log('erorr: ', error);
     }
 }
 

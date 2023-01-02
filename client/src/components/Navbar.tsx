@@ -4,15 +4,20 @@ import { Pressable, Image, StyleSheet, Text, View } from 'react-native';
 import userIcon from '../../assets/icons8-user-50.png';
 import { AuthContext } from '../context/auth';
 
-const Navbar = () => {
+const Navbar = ({navigation}) => {
     const [state, setState] = useContext(AuthContext);
 
+    const onHomelick = () => {
+        navigation.navigate('HomeScreen');
+    };
+
+    
     const _renderMenu = () => {
         return (
             <Box style={{ width: 40, height: 40 }} alignItems="flex-start">
                 <Menu
                     w="190"
-                    h="90"
+                    h="135"
                     style={{
                         backgroundColor: '#6B62FF',
                     }}
@@ -24,6 +29,9 @@ const Navbar = () => {
                         );
                     }}
                 >
+                    <Menu.Item onPress={onHomelick}>
+                        <Text style={styles.menuItem}>home</Text>
+                    </Menu.Item>
                     <Menu.Item>
                         <Text style={styles.menuItem}>filter dogs</Text>
                     </Menu.Item>
@@ -34,6 +42,10 @@ const Navbar = () => {
             </Box>
         );
     };
+
+    const onSavedDogsClick = ()=>{
+        navigation.navigate('SavedDogsScreen');
+    }
 
     const _renderUser = () => {
         return (
@@ -52,7 +64,7 @@ const Navbar = () => {
                         );
                     }}
                 >
-                    <Menu.Item>
+                    <Menu.Item onPress={onSavedDogsClick}>
                         <Text style={styles.menuItem}>saved dogs</Text>
                     </Menu.Item>
                     <Menu.Item>

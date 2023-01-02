@@ -60,9 +60,12 @@ app.get('/dogs', async (req, res) => {
 });
 
 app.get('/dogImage/:dogId', async (req, res) => {
+    console.log(req.params);
     try {
-        const file = await ImageModel.findOne({ dogId: req.params.dogId });
-        res.send(file.image.data);
+        const file = await ImageModel.findOne({ _id: req.params.dogId });
+
+        console.log('file: ', file);
+        res.json(file);
     } catch (error) {
         res.send('not found');
     }

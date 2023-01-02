@@ -7,6 +7,7 @@ import { AuthContext, AuthProvider } from './src/context/auth';
 import HomeScreen from './src/views/HomeScreen';
 import LoginScreen from './src/views/LoginScreen';
 import RegisterScreen from './src/views/RegisterScreen';
+import SavedDogs from './src/views/SavedDogs';
 
 const Stack = createNativeStackNavigator();
 
@@ -19,13 +20,16 @@ const NavaigationScreen = () => {
 
     return (
         <Stack.Navigator
-            initialRouteName="HomeScreen"
+            initialRouteName="SavedDogsScreen"
             screenOptions={{
                 headerShown: false,
             }}
         >
             {authenticated ? (
-                <Stack.Screen name="HomeScreen" component={HomeScreen} />
+                <>
+                    <Stack.Screen name="HomeScreen" component={HomeScreen} />
+                    <Stack.Screen name="SavedDogsScreen" component={SavedDogs} />
+                </>
             ) : (
                 <>
                     <Stack.Screen name="LoginScreen" component={LoginScreen} />
