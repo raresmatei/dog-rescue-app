@@ -1,12 +1,14 @@
 import { NavigationHelpersContext } from '@react-navigation/native';
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import icon from '../../assets/doggy.png';
 import BasicButton from '../components/Button';
 import Header from '../components/Header';
 import TextInput from '../components/TextInput';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import globalStyles from '../globalStyles/styles';
+import { AuthContext } from '../context/auth';
 
 const LoginScreen = ({ navigation }) => {
     const [error, setError] = useState(false);
@@ -15,6 +17,7 @@ const LoginScreen = ({ navigation }) => {
         email: '',
         password: '',
     });
+    const [state, setState] = useContext(AuthContext);
 
     const handleChangeUsername = (value) => {
         setLoginFields({
@@ -49,6 +52,10 @@ const LoginScreen = ({ navigation }) => {
         } else {
             setError(false);
             setErrorMessage('');
+            setState(resp.data);
+
+            await AsyncStorage.setItem('auth-rn', JSON.stringify(resp.data));
+
             navigation.navigate('HomeScreen');
         }
     };

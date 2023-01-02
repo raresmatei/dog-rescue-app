@@ -1,11 +1,13 @@
 import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Header from '../components/Header';
 import TextInput from '../components/TextInput';
 import { NativeBaseProvider, Radio } from 'native-base';
 import BasicButton from '../components/Button';
 import axios from 'axios';
 import globalStyles from '../globalStyles/styles';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AuthContext } from '../context/auth';
 
 const RegisterScreen = ({ navigation }) => {
     const [error, setError] = useState(false);
@@ -20,6 +22,7 @@ const RegisterScreen = ({ navigation }) => {
         street: '',
         number: '',
     });
+   const [state, setState] = useContext(AuthContext)
 
     const handleChangeRole = (value) => {
         setRegisterFields({
@@ -200,6 +203,8 @@ const RegisterScreen = ({ navigation }) => {
         } else {
             setError(false);
             setErrorMessage('');
+            setState(resp.data);
+            await AsyncStorage.setItem("auth-rn", JSON.stringify(resp.data))
             navigation.navigate('HomeScreen');
         }
     };
