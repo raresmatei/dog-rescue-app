@@ -1,15 +1,11 @@
 import mongoose from 'mongoose';
 
-const imageSchema = mongoose.Schema({
-    dogId:{
-        type: String,
-        required: true
-    },
-    name: {
-        type: String,
-        reguired: true,
-    },
-    image: {
+const imageSchema = new mongoose.Schema({
+    name: String,
+    breed: String,
+    age: Number,
+    temper: String,
+    img: {
         data: Buffer,
         contentType: String,
     },

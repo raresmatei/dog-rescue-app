@@ -42,7 +42,7 @@ const LikeButton = () => {
     );
 };
 
-const DogCard = ({name}) => {
+const DogCard = ({name, image}) => {
     // const [liked, setLiked] = useState(false);
 
     
@@ -50,7 +50,7 @@ const DogCard = ({name}) => {
     return (
         <NativeBaseProvider>
             <Card containerStyle={styles.card}>
-                <Card.Image style={{ width: '100%', height: 200, borderTopRightRadius: 6, borderTopLeftRadius: 6 }} source={doggy} />
+                <Card.Image style={{ width: '100%', height: 270, borderTopRightRadius: 6, borderTopLeftRadius: 6 }} source={image} />
                 <View style={styles.labelView}>
                     <LikeButton/>
                     <Text style={{ fontSize: 18 }}>{name}</Text>
@@ -65,9 +65,10 @@ const styles = StyleSheet.create({
         borderWidth: 1.5,
         borderColor: '#000',
         borderRadius: 6,
-        width: 300,
-        height: 250,
+        width: 320,
+        height: 320,
         padding: 0,
+        marginBottom: 30,
     },
     labelView: {
         width: '100%',
