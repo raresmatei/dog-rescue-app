@@ -8,6 +8,7 @@ import { decode as atob, encode as btoa } from 'base-64';
 import { AuthContext } from '../context/auth';
 import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 import DogDetailsCard from '../components/DogDetailsCard';
+import BasicButton from '../components/Button';
 
 const DogDetailsScreen = ({ navigation, route }): ReactElement => {
     const [savedDogs, setSavedDogs] = useState([]);
@@ -63,8 +64,16 @@ const DogDetailsScreen = ({ navigation, route }): ReactElement => {
     };
 
     const _renderDogDetails = () => {
-        return <DogDetailsCard name={name} breed={breed} gender={gender} temper={temper} age={age} />;
+        return <DogDetailsCard name={name} breed={breed} gender={gender} temper={temper} age={age} isShelter={false} />;
     };
+
+    const _renderShelterDetails = () => {
+        return <DogDetailsCard city='get city' street='get street' number='get number'  isShelter={true} />;
+    };
+
+    const _renderButton = ()=>{
+      return <BasicButton style={styles.button} title='ADOPT'/>
+    }
 
     const _renderContent = () => {
         return (
@@ -72,6 +81,8 @@ const DogDetailsScreen = ({ navigation, route }): ReactElement => {
                 <View style={{ alignItems: 'center' }}>
                     {_renderDog()}
                     {_renderDogDetails()}
+                    {_renderShelterDetails()}
+                    {_renderButton()}
                 </View>
             </ScrollView>
         );
@@ -98,12 +109,11 @@ const styles = StyleSheet.create({
         width: '100%',
         backgroundColor: '#E5E5E5',
     },
-    content: {
-        // display: 'flex',
-        // flexDirection: 'column',
-        // backgroundColor: '#E5E5E5',
-        // height: '100%',
-        // width: '100%',
+    button: {
+        width: 250,
+        fontSize: 40,
+        backgroundColor: '#01BFA6',
+        marginBottom: 30
     },
     dogsView: {
         // display: 'flex',
