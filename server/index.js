@@ -31,13 +31,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 app.post('/dogs', upload.single('testImage'), (req, res) => {
-    // const saveImage = ImageModel({
-    //     name: req.body.name,
-    //     img: {
-    //         data: fs.readFileSync('uploads/' + req.file.filename),
-    //         contentType: 'image/png',
-    //     },
-    // });
     const buffer = fs.readFileSync('uploads/' + req.file.filename);
     const base64String = btoa(
         new Uint8Array(buffer).reduce(function (data, byte) {
@@ -45,8 +38,17 @@ app.post('/dogs', upload.single('testImage'), (req, res) => {
         }, '')
     );
 
+    const {name, breed, age, temper, gender, shelterId} = req.body;
+
     const dog = ImageModel({
-        name: req.body.name,
+        name,
+        breed,
+        age,
+        temper,
+        gender,
+        shelterId,
+        isAdopted: false,
+        personId: null,
         base64StringImage: base64String,
     });
 

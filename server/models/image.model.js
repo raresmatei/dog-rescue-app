@@ -6,6 +6,9 @@ const imageSchema = new mongoose.Schema({
     age: Number,
     temper: String,
     gender: String,
+    isAdopted: Boolean,
+    personId: String,
+    shelterId: String,
     base64StringImage : String,
 });
 
