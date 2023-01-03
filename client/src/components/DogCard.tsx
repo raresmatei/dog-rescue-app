@@ -80,9 +80,7 @@ const LikeButton = ({ dogId }) => {
     );
 };
 
-const DogCard = ({ navigation, name, image, dogId, breed, gender, age, temper }) => {
-    console.log('id: ', dogId);
-    console.log('name: ', name);
+const DogCard = ({ navigation, name, image, dogId, breed, gender, age, temper, shelterId }) => {
 
     const handleOnImagePress = () => {
         if (navigation) {
@@ -94,6 +92,7 @@ const DogCard = ({ navigation, name, image, dogId, breed, gender, age, temper })
                 gender: gender,
                 age: age,
                 temper: temper,
+                shelterId: shelterId,
             });
         }
     };

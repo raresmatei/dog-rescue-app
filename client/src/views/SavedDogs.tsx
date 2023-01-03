@@ -58,6 +58,7 @@ const HomeScreen = ({ navigation }) => {
                      const gender = singleData.gender;
                      const temper = singleData.temper;
                      const age = singleData.age;
+                     const shelterId = singleData.shelterId;
                     return (
                         <DogCard
                             navigation={navigation}
@@ -69,6 +70,7 @@ const HomeScreen = ({ navigation }) => {
                             gender={gender}
                             temper={temper}
                             age={age}
+                            shelterId={shelterId}
                         />
                     );
                 })}

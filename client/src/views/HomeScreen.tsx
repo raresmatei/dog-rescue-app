@@ -34,12 +34,12 @@ const HomeScreen = ({ navigation }) => {
         return (
             <View style={styles.dogsView}>
                 {data.map((singleData, index) => {
-                    console.log('single Data: ', singleData.age);
                     const name = singleData.name;
                     const breed = singleData.breed;
                     const gender = singleData.gender;
                     const temper = singleData.temper;
                     const age = singleData.age;
+                    const shelterId = singleData.shelterId;
                     return (
                         <DogCard
                             navigation={navigation}
@@ -51,6 +51,7 @@ const HomeScreen = ({ navigation }) => {
                             gender={gender}
                             temper={temper}
                             age={age}
+                            shelterId={shelterId}
                         />
                     );
                 })}

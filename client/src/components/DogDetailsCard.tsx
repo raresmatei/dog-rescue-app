@@ -3,13 +3,7 @@ import React, { useState } from 'react';
 import { StyleSheet, Text } from 'react-native';
 import { Card } from 'react-native-elements';
 
-let cardHeight = 232;
-
-const DogDetailsCard = ({ name, breed, gender, age, temper, isShelter, city, street, number }) => {
-    // const [cardStyle, setCardStyle] = useState('');
-
-
-
+const DogDetailsCard = ({ name, breed, gender, age, temper, isShelter, shelter, city, street, number }) => {
     const _renderDetailLine = (detailName, detailValue) => {
         return (
             <View style={styles.detail}>
@@ -31,6 +25,7 @@ const DogDetailsCard = ({ name, breed, gender, age, temper, isShelter, city, str
                     </>
                 ) : (
                     <>
+                        {_renderDetailLine('name', shelter)}
                         {_renderDetailLine('city', city)}
                         {_renderDetailLine('street', street)}
                         {_renderDetailLine('number', number)}
@@ -41,15 +36,13 @@ const DogDetailsCard = ({ name, breed, gender, age, temper, isShelter, city, str
     );
 };
 
-console.log(cardHeight);
-
 const styles = StyleSheet.create({
     card: {
         borderWidth: 1.5,
         borderColor: '#000',
         borderRadius: 6,
         width: 320,
-        height: cardHeight,
+        height: 232,
         paddingTop: 10,
         paddingBottom: 10,
         marginBottom: 30,
@@ -73,7 +66,7 @@ const styles = StyleSheet.create({
 const stylesShelterDetails=StyleSheet.create({
     card:{
         ...styles.card,
-        height: 150
+        height: 180
     }
 })
 

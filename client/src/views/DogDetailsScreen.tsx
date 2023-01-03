@@ -11,10 +11,13 @@ import DogDetailsCard from '../components/DogDetailsCard';
 import BasicButton from '../components/Button';
 
 const DogDetailsScreen = ({ navigation, route }): ReactElement => {
-    const [savedDogs, setSavedDogs] = useState([]);
-    const [state, setState] = useContext(AuthContext);
-    const [dogs, setDogs] = useState([]);
     const isFocused = useIsFocused();
+    const [shelter, setShelter] = useState({
+        name: '',
+        city: '',
+        street: '',
+        number: '',
+    });
 
     const id = route.params.id;
     const name = route.params.name;
@@ -23,33 +26,27 @@ const DogDetailsScreen = ({ navigation, route }): ReactElement => {
     const gender = route.params.gender;
     const age = route.params.age;
     const temper = route.params.temper;
+    const shelterId = route.params.shelterId;
 
-    // useEffect(() => {
-    //     if (isFocused) {
-    //         fetchDog();
-    //     }
-    // }, [isFocused]);
+    useEffect(() => {
+        if (isFocused) {
+            fetchShelter();
+        }
+    }, [isFocused]);
 
-    // const fetchDog = async () => {
-    //     try {
-    //         const request = `http://localhost:8000/savedDogs/${state.user._id}`;
-    //         const result = await axios.get(request);
+    const fetchShelter = async () => {
+        try {
+            if (shelterId) {
+                const request = `http://localhost:8000/api/shelter/${shelterId}`;
 
-    //         const promises = result.data.map((el) => {
-    //             const request = `http://localhost:8000/dogImage/${el.dogId}`;
-
-    //             return axios.get(request);
-    //         });
-
-    //         const savedDogs = await Promise.all(promises);
-
-    //         const mappedToDataDogs = savedDogs.map((el) => el.data);
-
-    //         setSavedDogs(mappedToDataDogs);
-    //     } catch (err) {
-    //         console.log('err: ', err);
-    //     }
-    // };
+                const result = await axios.get(request);
+                
+                setShelter(result.data);
+            }
+        } catch (err) {
+            console.log('err: ', err);
+        }
+    };
 
     const _renderHeader = () => {
         return (
@@ -68,12 +65,20 @@ const DogDetailsScreen = ({ navigation, route }): ReactElement => {
     };
 
     const _renderShelterDetails = () => {
-        return <DogDetailsCard city='get city' street='get street' number='get number'  isShelter={true} />;
+        return (
+            <DogDetailsCard
+                city={shelter.city}
+                street={shelter.street}
+                number={shelter.number}
+                shelter={shelter.name}
+                isShelter={true}
+            />
+        );
     };
 
-    const _renderButton = ()=>{
-      return <BasicButton style={styles.button} title='ADOPT'/>
-    }
+    const _renderButton = () => {
+        return <BasicButton style={styles.button} title="ADOPT" />;
+    };
 
     const _renderContent = () => {
         return (
@@ -113,7 +118,7 @@ const styles = StyleSheet.create({
         width: 250,
         fontSize: 40,
         backgroundColor: '#01BFA6',
-        marginBottom: 30
+        marginBottom: 30,
     },
     dogsView: {
         // display: 'flex',

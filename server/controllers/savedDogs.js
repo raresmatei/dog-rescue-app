@@ -33,8 +33,6 @@ export const getSavedDogByUserId = async(req, res)=>{
 export const getSavedDogByUserIdAndDogId = async (req, res) => {
     const { userId, dogId } = req.params;
 
-    console.log('ids: ', userId, dogId);
-
     try {
         const dog = await SavedDog.findOne({ userId, dogId });
 
@@ -46,7 +44,6 @@ export const getSavedDogByUserIdAndDogId = async (req, res) => {
 
 export const deleteSavedDog = async(req, res)=>{
     const { userId, dogId } = req.params;
-    console.log(userId, dogId);
 
     try {
         await SavedDog.deleteOne({ dogId, userId });

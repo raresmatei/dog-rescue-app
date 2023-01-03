@@ -1,5 +1,5 @@
 import express from 'express';
-import { signin, signup } from '../controllers/auth';
+import { getShelterAdressById, signin, signup } from '../controllers/auth';
 
 const router = express.Router();
 
@@ -12,5 +12,7 @@ router.get("/", (req, res)=>{
 router.post("/signup", signup);
 
 router.post("/signin", signin);
+
+router.get("/shelter/:id", getShelterAdressById);
 
 export default router;

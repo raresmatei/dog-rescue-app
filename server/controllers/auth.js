@@ -11,7 +11,7 @@ export const signup = async (req, res) => {
         const { name, email, password, confirmPassword, city, street, number, role } = req.body;
 
         console.log(req.body);
-  
+
         if (!name) {
             return res.json({
                 error: 'Name is required',
@@ -44,12 +44,13 @@ export const signup = async (req, res) => {
         const hashedPassword = await hashPassword(password);
         try {
             const user = new User({ name, email, password: hashedPassword, city, street, number, role });
-                
-            await user.save((err, res)=>{
-                if(err){
+
+            console.log('role: ', user.role);
+
+            await user.save((err, res) => {
+                if (err) {
                     console.log('err');
-                }
-                else{
+                } else {
                     console.log(res);
                 }
             });
@@ -62,13 +63,13 @@ export const signup = async (req, res) => {
             return res.json({
                 token,
                 user: {
-                    id:user.id,
+                    id: user.id,
                     name: user.name,
                     email: user.email,
-                    role:user.role,
+                    role: user.role,
                     city: user.city,
                     street: user.street,
-                    number: user.number
+                    number: user.number,
                 },
             });
         } catch (err) {
@@ -80,7 +81,6 @@ export const signup = async (req, res) => {
 };
 
 export const signin = async (req, res) => {
-    // console.log(req.body);
     try {
         const { email, password } = req.body;
         // check if our db has user with that email
@@ -106,6 +106,31 @@ export const signin = async (req, res) => {
         res.json({
             token,
             user,
+        });
+    } catch (err) {
+        console.log(err);
+        return res.status(400).send('Error. Try again.');
+    }
+};
+
+export const getShelterAdressById = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        console.log('id: ', id);
+        // check if our db has user with that email
+        const user = await User.findOne({ _id: id, role: 'admin' });
+        if (!user) {
+            return res.json({
+                error: 'No user found',
+            });
+        }
+
+        res.json({
+            name: user.name,
+            city: user.city,
+            street: user.street,
+            number: user.number,
         });
     } catch (err) {
         console.log(err);
