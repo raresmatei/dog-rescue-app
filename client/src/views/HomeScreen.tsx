@@ -5,12 +5,15 @@ import DogCard from '../components/DogCard';
 import Header from '../components/Header';
 import Navbar from '../components/Navbar';
 import { decode as atob, encode as btoa } from 'base-64';
+import { useIsFocused } from '@react-navigation/native';
 
 const HomeScreen = ({ navigation }) => {
     const [data, setData] = useState([]);
+    const isFocused = useIsFocused();
+
     useEffect(() => {
         fetchDogs();
-    }, []);
+    }, [isFocused]);
 
     const fetchDogs = async () => {
         try {

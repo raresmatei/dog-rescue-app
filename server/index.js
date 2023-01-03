@@ -38,7 +38,7 @@ app.post('/dogs', upload.single('testImage'), (req, res) => {
         }, '')
     );
 
-    const {name, breed, age, temper, gender, shelterId} = req.body;
+    const { name, breed, age, temper, gender, shelterId } = req.body;
 
     const dog = ImageModel({
         name,
@@ -65,7 +65,7 @@ app.post('/dogs', upload.single('testImage'), (req, res) => {
 
 app.get('/dogs', async (req, res) => {
     try {
-        const allData = await ImageModel.find();
+        const allData = await ImageModel.find({isAdopted: false});
 
         res.json(allData);
     } catch (err) {
@@ -80,6 +80,27 @@ app.get('/dogImage/:dogId', async (req, res) => {
 
         console.log('file: ', file);
         res.json(file);
+    } catch (error) {
+        res.send('not found');
+    }
+});
+
+app.patch('/dogImage/:dogId', async (req, res) => {
+    const { userId } = req.body;
+    try {
+        const file = await ImageModel.findOne({ _id: req.params.dogId });
+
+        if (file) {
+            file.isAdopted = true;
+            file.personId = userId;
+
+            file.save();
+        }
+        else{
+            res.send('not found');
+        }
+
+        res.send(file);
     } catch (error) {
         res.send('not found');
     }

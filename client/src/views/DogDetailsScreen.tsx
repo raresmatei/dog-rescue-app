@@ -11,6 +11,7 @@ import DogDetailsCard from '../components/DogDetailsCard';
 import BasicButton from '../components/Button';
 
 const DogDetailsScreen = ({ navigation, route }): ReactElement => {
+    const [state, setState] = useContext(AuthContext);
     const isFocused = useIsFocused();
     const [shelter, setShelter] = useState({
         name: '',
@@ -40,7 +41,7 @@ const DogDetailsScreen = ({ navigation, route }): ReactElement => {
                 const request = `http://localhost:8000/api/shelter/${shelterId}`;
 
                 const result = await axios.get(request);
-                
+
                 setShelter(result.data);
             }
         } catch (err) {
@@ -76,8 +77,24 @@ const DogDetailsScreen = ({ navigation, route }): ReactElement => {
         );
     };
 
+    const onHandleAdopt = async ()=>{
+        const adoptRequest = `http://localhost:8000/dogImage/${id}`;
+
+        const userId = state.user._id;
+
+        await axios.patch(adoptRequest, {userId});
+
+        const deleteSavedDogRequest = `http://localhost:8000/savedDogs/${userId}/${id}`;
+
+        await axios.delete(deleteSavedDogRequest);
+
+        alert('adopted succesfully');
+
+        navigation.navigate('HomeScreen');
+    }
+
     const _renderButton = () => {
-        return <BasicButton style={styles.button} title="ADOPT" />;
+        return <BasicButton onClick={onHandleAdopt} style={styles.button} title="ADOPT" />;
     };
 
     const _renderContent = () => {
