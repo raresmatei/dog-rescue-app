@@ -25,10 +25,9 @@ const LikeButton = ({ dogId }) => {
         const request = `http://localhost:8000/savedDogs/${state.user._id}/${dogId}`;
         const isLiked = await axios.get(request);
 
-        if(isLiked.data){
+        if (isLiked.data) {
             liked.value = 1;
-        }
-        else{
+        } else {
             liked.value = 0;
         }
     };
@@ -81,16 +80,33 @@ const LikeButton = ({ dogId }) => {
     );
 };
 
-const DogCard = ({ name, image, dogId }) => {
-    // const [liked, setLiked] = useState(false);
+const DogCard = ({ navigation, name, image, dogId, breed, gender, age, temper }) => {
+    console.log('id: ', dogId);
+    console.log('name: ', name);
+
+    const handleOnImagePress = () => {
+        if (navigation) {
+            navigation.navigate('DogDetailsScreen', {
+                id: dogId,
+                name: name,
+                image: image,
+                breed: breed,
+                gender: gender,
+                age: age,
+                temper: temper,
+            });
+        }
+    };
 
     return (
         <NativeBaseProvider>
             <Card containerStyle={styles.card}>
-                <Card.Image
-                    style={{ width: '100%', height: 270, borderTopRightRadius: 6, borderTopLeftRadius: 6 }}
-                    source={image}
-                />
+                <Pressable onPress={handleOnImagePress}>
+                    <Card.Image
+                        style={{ width: '100%', height: 270, borderTopRightRadius: 6, borderTopLeftRadius: 6 }}
+                        source={image}
+                    />
+                </Pressable>
                 <View style={styles.labelView}>
                     <LikeButton dogId={dogId} />
                     <Text style={{ fontSize: 18 }}>{name}</Text>

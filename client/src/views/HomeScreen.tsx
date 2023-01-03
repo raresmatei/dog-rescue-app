@@ -6,7 +6,7 @@ import Header from '../components/Header';
 import Navbar from '../components/Navbar';
 import { decode as atob, encode as btoa } from 'base-64';
 
-const HomeScreen = ({navigation}) => {
+const HomeScreen = ({ navigation }) => {
     const [data, setData] = useState([]);
     useEffect(() => {
         fetchDogs();
@@ -34,13 +34,23 @@ const HomeScreen = ({navigation}) => {
         return (
             <View style={styles.dogsView}>
                 {data.map((singleData, index) => {
+                    console.log('single Data: ', singleData.age);
                     const name = singleData.name;
+                    const breed = singleData.breed;
+                    const gender = singleData.gender;
+                    const temper = singleData.temper;
+                    const age = singleData.age;
                     return (
                         <DogCard
+                            navigation={navigation}
                             dogId={singleData._id}
                             key={index}
                             name={name}
                             image={{ uri: `data:image/png;base64,${singleData.base64StringImage}` }}
+                            breed={breed}
+                            gender={gender}
+                            temper={temper}
+                            age={age}
                         />
                     );
                 })}
@@ -51,7 +61,7 @@ const HomeScreen = ({navigation}) => {
     return (
         <View style={styles.view}>
             <View style={{ width: '100%', zIndex: 1000 }}>
-                <Navbar navigation={navigation}/>
+                <Navbar navigation={navigation} />
             </View>
 
             <View>{_renderHeader()}</View>

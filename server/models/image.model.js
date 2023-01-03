@@ -5,10 +5,7 @@ const imageSchema = new mongoose.Schema({
     breed: String,
     age: Number,
     temper: String,
-    // img: {
-    //     data: Buffer,
-    //     contentType: String,
-    // },
+    gender: String,
     base64StringImage : String,
 });
 

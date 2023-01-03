@@ -13,19 +13,19 @@ const HomeScreen = ({ navigation }) => {
     const [state, setState] = useContext(AuthContext);
     const [dogs, setDogs] = useState([]);
     const isFocused = useIsFocused();
-    
+
     useEffect(() => {
         if (isFocused) {
             fetchDogs();
         }
-    }, [isFocused] );
+    }, [isFocused]);
 
     const fetchDogs = async () => {
         try {
             const request = `http://localhost:8000/savedDogs/${state.user._id}`;
             const result = await axios.get(request);
 
-            const promises = result.data.map( (el) => {
+            const promises = result.data.map((el) => {
                 const request = `http://localhost:8000/dogImage/${el.dogId}`;
 
                 return axios.get(request);
@@ -34,7 +34,6 @@ const HomeScreen = ({ navigation }) => {
             const savedDogs = await Promise.all(promises);
 
             const mappedToDataDogs = savedDogs.map((el) => el.data);
-
 
             setSavedDogs(mappedToDataDogs);
         } catch (err) {
@@ -54,14 +53,22 @@ const HomeScreen = ({ navigation }) => {
         return (
             <View style={styles.dogsView}>
                 {savedDogs.map((singleData, index) => {
-
                     const name = singleData.name;
+                     const breed = singleData.breed;
+                     const gender = singleData.gender;
+                     const temper = singleData.temper;
+                     const age = singleData.age;
                     return (
                         <DogCard
+                            navigation={navigation}
                             dogId={singleData._id}
                             key={index}
                             name={name}
                             image={{ uri: `data:image/png;base64,${singleData.base64StringImage}` }}
+                            breed={breed}
+                            gender={gender}
+                            temper={temper}
+                            age={age}
                         />
                     );
                 })}
