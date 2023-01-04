@@ -21,7 +21,7 @@ const NavaigationScreen = () => {
 
     return (
         <Stack.Navigator
-            initialRouteName="AdoptedDogsScreen"
+            initialRouteName="HomeScreen"
             screenOptions={{
                 headerShown: false,
             }}
