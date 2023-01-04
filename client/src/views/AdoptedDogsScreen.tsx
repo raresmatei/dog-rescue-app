@@ -1,25 +1,30 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import { Image, ScrollView, StyleSheet, View } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import DogCard from '../components/DogCard';
 import Header from '../components/Header';
 import Navbar from '../components/Navbar';
-import { decode as atob, encode as btoa } from 'base-64';
+import { AuthContext } from '../context/auth';
 import { useIsFocused } from '@react-navigation/native';
 
-const HomeScreen = ({ navigation }) => {
-    const [data, setData] = useState([]);
+const AdoptedDogsScreen = ({ navigation }) => {
+    const [savedDogs, setSavedDogs] = useState([]);
+    const [state, setState] = useContext(AuthContext);
+    const [dogs, setDogs] = useState([]);
     const isFocused = useIsFocused();
 
     useEffect(() => {
-        fetchDogs();
+        if (isFocused) {
+            fetchDogs();
+        }
     }, [isFocused]);
 
     const fetchDogs = async () => {
         try {
-            const result = await axios.get('http://localhost:8000/dogs');
+            const request = `http://localhost:8000/dogs/${state.user._id}`;
+            const result = await axios.get(request);
 
-            setData(result.data);
+            setSavedDogs(result.data);
         } catch (err) {
             console.log('err: ', err);
         }
@@ -28,7 +33,7 @@ const HomeScreen = ({ navigation }) => {
     const _renderHeader = () => {
         return (
             <View style={styles.header}>
-                <Header title="Available dogs" />
+                <Header title="Adopted dogs" />
             </View>
         );
     };
@@ -36,7 +41,7 @@ const HomeScreen = ({ navigation }) => {
     const _renderDogs = () => {
         return (
             <View style={styles.dogsView}>
-                {data.map((singleData, index) => {
+                {savedDogs.map((singleData, index) => {
                     const name = singleData.name;
                     const breed = singleData.breed;
                     const gender = singleData.gender;
@@ -56,7 +61,7 @@ const HomeScreen = ({ navigation }) => {
                             temper={temper}
                             age={age}
                             shelterId={shelterId}
-                            isAdopted={singleData.isAdopted}
+                            isAdopted={isAdopted}
                         />
                     );
                 })}
@@ -106,4 +111,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default HomeScreen;
+export default AdoptedDogsScreen;

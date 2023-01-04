@@ -28,6 +28,7 @@ const DogDetailsScreen = ({ navigation, route }): ReactElement => {
     const age = route.params.age;
     const temper = route.params.temper;
     const shelterId = route.params.shelterId;
+    const isAdopted = route.params.isAdopted;
 
     useEffect(() => {
         if (isFocused) {
@@ -58,7 +59,7 @@ const DogDetailsScreen = ({ navigation, route }): ReactElement => {
     };
 
     const _renderDog = () => {
-        return <DogCard dogId={id} name={name} image={image} />;
+        return <DogCard isAdopted={isAdopted} dogId={id} name={name} image={image} />;
     };
 
     const _renderDogDetails = () => {
@@ -104,7 +105,7 @@ const DogDetailsScreen = ({ navigation, route }): ReactElement => {
                     {_renderDog()}
                     {_renderDogDetails()}
                     {_renderShelterDetails()}
-                    {_renderButton()}
+                    {!isAdopted && _renderButton()}
                 </View>
             </ScrollView>
         );

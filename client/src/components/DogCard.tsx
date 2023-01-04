@@ -80,7 +80,7 @@ const LikeButton = ({ dogId }) => {
     );
 };
 
-const DogCard = ({ navigation, name, image, dogId, breed, gender, age, temper, shelterId }) => {
+const DogCard = ({ navigation, name, image, dogId, breed, gender, age, temper, shelterId, isAdopted }) => {
 
     const handleOnImagePress = () => {
         if (navigation) {
@@ -93,6 +93,7 @@ const DogCard = ({ navigation, name, image, dogId, breed, gender, age, temper, s
                 age: age,
                 temper: temper,
                 shelterId: shelterId,
+                isAdopted: isAdopted
             });
         }
     };
@@ -107,7 +108,7 @@ const DogCard = ({ navigation, name, image, dogId, breed, gender, age, temper, s
                     />
                 </Pressable>
                 <View style={styles.labelView}>
-                    <LikeButton dogId={dogId} />
+                     {!isAdopted && <LikeButton dogId={dogId} />}
                     <Text style={{ fontSize: 18 }}>{name}</Text>
                 </View>
             </Card>

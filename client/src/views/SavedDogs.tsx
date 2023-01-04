@@ -1,14 +1,13 @@
 import axios from 'axios';
 import React, { useContext, useEffect, useState } from 'react';
-import { Image, ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import DogCard from '../components/DogCard';
 import Header from '../components/Header';
 import Navbar from '../components/Navbar';
-import { decode as atob, encode as btoa } from 'base-64';
 import { AuthContext } from '../context/auth';
-import { useFocusEffect, useIsFocused } from '@react-navigation/native';
+import { useIsFocused } from '@react-navigation/native';
 
-const HomeScreen = ({ navigation }) => {
+const SavedDogsScreen = ({ navigation }) => {
     const [savedDogs, setSavedDogs] = useState([]);
     const [state, setState] = useContext(AuthContext);
     const [dogs, setDogs] = useState([]);
@@ -54,11 +53,12 @@ const HomeScreen = ({ navigation }) => {
             <View style={styles.dogsView}>
                 {savedDogs.map((singleData, index) => {
                     const name = singleData.name;
-                     const breed = singleData.breed;
-                     const gender = singleData.gender;
-                     const temper = singleData.temper;
-                     const age = singleData.age;
-                     const shelterId = singleData.shelterId;
+                    const breed = singleData.breed;
+                    const gender = singleData.gender;
+                    const temper = singleData.temper;
+                    const age = singleData.age;
+                    const shelterId = singleData.shelterId;
+                    const isAdopted = singleData.isAdopted;
                     return (
                         <DogCard
                             navigation={navigation}
@@ -71,6 +71,7 @@ const HomeScreen = ({ navigation }) => {
                             temper={temper}
                             age={age}
                             shelterId={shelterId}
+                            isAdopted ={isAdopted}
                         />
                     );
                 })}
@@ -120,4 +121,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default HomeScreen;
+export default SavedDogsScreen;

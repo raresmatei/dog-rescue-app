@@ -63,6 +63,19 @@ app.post('/dogs', upload.single('testImage'), (req, res) => {
     res.send('image is saved');
 });
 
+app.get('/dogs/:personId', async (req, res) => {
+    console.log('query: ', req.params.personId);
+    try {
+        const personId = req.params.personId;
+        
+        const allData = await ImageModel.find({ personId: personId });
+
+        res.json(allData);
+    } catch (err) {
+        console.log('err : ', err);
+    }
+});
+
 app.get('/dogs', async (req, res) => {
     try {
         const allData = await ImageModel.find({isAdopted: false});
