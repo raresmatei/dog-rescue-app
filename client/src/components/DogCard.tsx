@@ -1,7 +1,7 @@
-import { FavouriteIcon, NativeBaseProvider } from 'native-base';
+import { NativeBaseProvider } from 'native-base';
 import React, { useContext, useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { Card, Icon, Button } from 'react-native-elements';
+import { Card } from 'react-native-elements';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Animated, {
     Extrapolate,
@@ -12,6 +12,8 @@ import Animated, {
 } from 'react-native-reanimated';
 import axios from 'axios';
 import { AuthContext } from '../context/auth';
+import { isNamedExportBindings } from 'typescript';
+import BasicButton from './Button';
 
 const LikeButton = ({ dogId }) => {
     const liked = useSharedValue(0);
@@ -80,7 +82,10 @@ const LikeButton = ({ dogId }) => {
     );
 };
 
-const DogCard = ({ navigation, name, image, dogId, breed, gender, age, temper, shelterId, isAdopted }) => {
+const DogCard = ({ navigation, name, image, dogId, breed, gender, age, temper, shelterId, isAdopted, onDelete }) => {
+    const [state, setState] = useContext(AuthContext);
+
+    const isAdmin = () => state.user.role === 'admin';
 
     const handleOnImagePress = () => {
         if (navigation) {
@@ -93,9 +98,44 @@ const DogCard = ({ navigation, name, image, dogId, breed, gender, age, temper, s
                 age: age,
                 temper: temper,
                 shelterId: shelterId,
-                isAdopted: isAdopted
+                isAdopted: isAdopted,
             });
         }
+    };
+
+    const onRemoveClick = async () => {
+        const deleteRequest = `http://localhost:8000/dogImage/${dogId}`;
+
+        try {
+            await axios.delete(deleteRequest);
+
+            onDelete();
+            // setIsDeleted(true);
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    const _renderAdminFooter = () => {
+        return (
+            <>
+                {isAdopted ? (
+                    <Text style={styles.adoptedText}>Adopted</Text>
+                ) : (
+                    <BasicButton onClick={onRemoveClick} style={styles.removeButton} title="REMOVE" />
+                )}
+                <Text style={{ fontSize: 18 }}>{name}</Text>
+            </>
+        );
+    };
+
+    const _renderUserFooter = () => {
+        return (
+            <>
+                {!isAdopted && <LikeButton dogId={dogId} />}
+                <Text style={{ fontSize: 18 }}>{name}</Text>
+            </>
+        );
     };
 
     return (
@@ -107,10 +147,7 @@ const DogCard = ({ navigation, name, image, dogId, breed, gender, age, temper, s
                         source={image}
                     />
                 </Pressable>
-                <View style={styles.labelView}>
-                     {!isAdopted && <LikeButton dogId={dogId} />}
-                    <Text style={{ fontSize: 18 }}>{name}</Text>
-                </View>
+                <View style={styles.labelView}>{isAdmin() ? _renderAdminFooter() : _renderUserFooter()}</View>
             </Card>
         </NativeBaseProvider>
     );
@@ -133,12 +170,25 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         paddingRight: 15,
         paddingLeft: 10,
-        paddingTop: 15,
+        paddingTop: 10,
     },
     favoriteIcon: {
         position: 'relative',
         top: -3,
-        // width: 40
+    },
+    adoptedText: {
+        textAlign: 'center',
+        fontSize: 17,
+        color: '#fff',
+        backgroundColor: '#01BFA6',
+        width: 90,
+        height: 27,
+    },
+    removeButton: {
+        width: 100,
+        height: 30,
+        paddingTop: 3,
+        paddingBottom: 3,
     },
 });
 

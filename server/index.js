@@ -8,7 +8,7 @@ const connectionImageDb = require('./imagedb');
 import { ImageModel } from './models/image.model';
 import multer from 'multer';
 const fs = require('fs');
-import { decode as atob, encode as btoa } from 'base-64';
+import { encode as btoa } from 'base-64';
 
 const app = express();
 
@@ -76,6 +76,18 @@ app.get('/dogs/:personId', async (req, res) => {
     }
 });
 
+app.get('/shleter/dogs/:shelterID', async (req, res)=>{
+    try {
+        const shelterId = req.params.shelterID;
+
+        const allData = await ImageModel.find({ shelterId: shelterId });
+
+        res.json(allData);
+    } catch (error) {
+        console.log(error);
+    }
+})
+
 app.get('/dogs', async (req, res) => {
     try {
         const allData = await ImageModel.find({isAdopted: false});
@@ -121,7 +133,7 @@ app.patch('/dogImage/:dogId', async (req, res) => {
 
 app.delete('/dogImage/:dogId', async (req, res) => {
     try {
-        const file = await ImageModel.deleteOne({ dogId: req.params.dogId });
+        const file = await ImageModel.deleteOne({ _id: req.params.dogId });
         console.log(file);
         res.send('deleted successfuly image');
     } catch (error) {

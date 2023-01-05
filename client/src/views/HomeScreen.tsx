@@ -1,14 +1,15 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import DogCard from '../components/DogCard';
 import Header from '../components/Header';
 import Navbar from '../components/Navbar';
 import { useIsFocused } from '@react-navigation/native';
 import DropDownPicker from 'react-native-dropdown-picker';
-import { event } from 'react-native-reanimated';
+import { AuthContext } from '../context/auth';
 
 const HomeScreen = ({ navigation }) => {
+    const [state, setState] = useContext(AuthContext);
     const [data, setData] = useState([]);
     const [displayData, setDisplayData] = useState([]);
     const isFocused = useIsFocused();
@@ -18,13 +19,9 @@ const HomeScreen = ({ navigation }) => {
     const [openMinAge, setOpenMinAge] = useState(false);
     const [openMaxAge, setOpenMaxAge] = useState(false);
 
-    const [filterValues, setFilterValues] = useState({
-        gender: 'male',
-        minAge: 0,
-        maxAge: 15,
-        breed: '',
-        shelterCity: '',
-    });
+    const [lastDeletedDog, setLastDeletedDog] = useState('');
+
+    const isAdmin = () => state.user.role === 'admin';
 
     const age = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
 
@@ -47,8 +44,7 @@ const HomeScreen = ({ navigation }) => {
     const [minAge, setMinAge] = useState<number>();
 
     useEffect(() => {
-        console.log('maine');
-        if (isFocused) {
+        if (isFocused || lastDeletedDog !== '') {
             fetchDogs();
             setBreed('');
             setMinAge(undefined);
@@ -56,36 +52,36 @@ const HomeScreen = ({ navigation }) => {
             setGender('');
             setCity('');
         }
-    }, [isFocused]);
-
-    console.log(data.length);
+    }, [isFocused, lastDeletedDog]);
 
     const fetchDogs = async () => {
         try {
-            const result = await axios.get('http://localhost:8000/dogs');
+            const getDogsRequest = !isAdmin()
+                ? 'http://localhost:8000/dogs'
+                : `http://localhost:8000/shleter/dogs/${state.user._id}`;
 
-            const promisesCities = result.data.map(async (item) => await getCity(item.shelterId));
+            const result = await axios.get(getDogsRequest);
 
-            const cities = await Promise.all(promisesCities);
+            if (!isAdmin()) {
+                const promisesCities = result.data.map(async (item) => await getCity(item.shelterId));
 
-            const resultWithCities = result.data.map((item, index) => ({
-                ...item,
-                city: cities[index],
-            }));
+                const cities = await Promise.all(promisesCities);
 
-            console.log(
-                'res: ',
-                resultWithCities.map((x) => x.city)
-            );
+                const resultWithCities = result.data.map((item, index) => ({
+                    ...item,
+                    city: cities[index],
+                }));
 
-            setData(resultWithCities);
-            setDisplayData(resultWithCities);
+                setData(resultWithCities);
+                setDisplayData(resultWithCities);
+            } else {
+                setData(result.data);
+                setDisplayData(result.data);
+            }
         } catch (err) {
             console.log('err: ', err);
         }
     };
-
-    console.log(breed, gender, city, minAge, maxAge);
 
     const getCity = async (id) => {
         try {
@@ -99,15 +95,8 @@ const HomeScreen = ({ navigation }) => {
         }
     };
 
-    // const testFct = async (id)=>{
-    //     const result = await getCity(id);
-
-    //     return result === city;
-    // }
-
     const filterByCity = (array) => {
         if (city !== '') {
-            console.log('city');
             return array.filter((item) => item.city === city);
         }
         return array;
@@ -129,8 +118,6 @@ const HomeScreen = ({ navigation }) => {
 
     const filterByMinAge = (array) => {
         if (minAge !== undefined) {
-            console.log('min age');
-            console.log(array.map((x) => x.age));
             return array.filter((item) => item.age >= minAge);
         }
         return array;
@@ -143,18 +130,15 @@ const HomeScreen = ({ navigation }) => {
         return array;
     };
 
-    console.log('is foc: ', isFocused);
-
     useEffect(() => {
-            console.log('filter ...');
-            let filteredData = data;
-            filteredData = filterByBreed(filteredData);
-            filteredData = filterByCity(filteredData);
-            filteredData = filterByGender(filteredData);
-            filteredData = filterByMaxAge(filteredData);
-            filteredData = filterByMinAge(filteredData);
+        let filteredData = data;
+        filteredData = filterByBreed(filteredData);
+        filteredData = filterByCity(filteredData);
+        filteredData = filterByGender(filteredData);
+        filteredData = filterByMaxAge(filteredData);
+        filteredData = filterByMinAge(filteredData);
 
-            setDisplayData(filteredData);
+        setDisplayData(filteredData);
     }, [breed, city, minAge, maxAge, gender, isFocused]);
 
     const _renderHeader = () => {
@@ -194,12 +178,13 @@ const HomeScreen = ({ navigation }) => {
         );
     };
 
+    const filtersHeight = isAdmin() ? 340 : 410;
     const _renderFilters = () => {
         return (
-            <View style={{ height: 410, alignSelf: 'center', zIndex: 20000 }}>
+            <View style={{ height: filtersHeight, alignSelf: 'center', zIndex: 20000 }}>
                 {_renderFilter('breed', breed, setBreed, openBreed, setOpenBreed, 15000)}
                 {_renderFilter('gender', gender, setGender, openGender, setOpenGender, 14000)}
-                {_renderFilter('city', city, setCity, openShelterCity, setOpenShelterCity, 13000)}
+                {!isAdmin() && _renderFilter('city', city, setCity, openShelterCity, setOpenShelterCity, 13000)}
                 {_renderFilter('minAge', minAge, setMinAge, openMinAge, setOpenMinAge, 12000)}
                 {_renderFilter('maxAge', maxAge, setMaxAge, openMaxAge, setOpenMaxAge, 11000)}
             </View>
@@ -219,6 +204,9 @@ const HomeScreen = ({ navigation }) => {
                     const isAdopted = singleData.isAdopted;
                     return (
                         <DogCard
+                            onDelete={() => {
+                                setLastDeletedDog(singleData._id);
+                            }}
                             navigation={navigation}
                             dogId={singleData._id}
                             key={index}

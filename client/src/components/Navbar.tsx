@@ -1,11 +1,14 @@
 import { Box, HamburgerIcon, Menu, NativeBaseProvider } from 'native-base';
 import React, { useContext } from 'react';
 import { Pressable, Image, StyleSheet, Text, View } from 'react-native';
+import { RollInLeft } from 'react-native-reanimated';
 import userIcon from '../../assets/icons8-user-50.png';
 import { AuthContext } from '../context/auth';
 
 const Navbar = ({ navigation }) => {
     const [state, setState] = useContext(AuthContext);
+
+    const isAdmin = () => state.user.role === 'admin';
 
     const onHomelick = () => {
         navigation.navigate('HomeScreen');
@@ -13,32 +16,26 @@ const Navbar = ({ navigation }) => {
 
     const _renderMenu = () => {
         return (
-            <Box style={{ width: 40, height: 40 }} alignItems="flex-start">
-                <Menu
-                    w="190"
-                    h="135"
-                    style={{
-                        backgroundColor: '#6B62FF',
-                    }}
-                    trigger={(triggerProps) => {
-                        return (
-                            <Pressable accessibilityLabel="More options menu" {...triggerProps}>
-                                <HamburgerIcon style={{ color: '#ffffff', width: 45, height: 50 }} />
-                            </Pressable>
-                        );
-                    }}
-                >
-                    <Menu.Item onPress={onHomelick}>
-                        <Text style={styles.menuItem}>home</Text>
-                    </Menu.Item>
-                    <Menu.Item>
-                        <Text style={styles.menuItem}>filter dogs</Text>
-                    </Menu.Item>
-                    <Menu.Item>
-                        <Text style={styles.menuItem}>filter shelters</Text>
-                    </Menu.Item>
-                </Menu>
-            </Box>
+            <Menu
+                w="190"
+                style={{
+                    backgroundColor: '#6B62FF',
+                    marginTop: -25,
+                    marginLeft: -22,
+                    // height: 200
+                }}
+                trigger={(triggerProps) => {
+                    return (
+                        <Pressable accessibilityLabel="More options menu" {...triggerProps}>
+                            <HamburgerIcon style={{ color: '#ffffff', width: 45, height: 50 }} />
+                        </Pressable>
+                    );
+                }}
+            >
+                <Menu.Item onPress={onHomelick}>
+                    <Text style={styles.menuItem}>home</Text>
+                </Menu.Item>
+            </Menu>
         );
     };
 
@@ -52,32 +49,35 @@ const Navbar = ({ navigation }) => {
 
     const _renderUser = () => {
         return (
-            <Box style={{ width: 40, height: 40 }} alignItems="flex-start">
-                <Menu
-                    w="190"
-                    h="130"
-                    style={{
-                        backgroundColor: '#6B62FF',
-                    }}
-                    trigger={(triggerProps) => {
-                        return (
-                            <Pressable accessibilityLabel="More options menu" {...triggerProps}>
-                                <Image style={{ width: 45, height: 45 }} source={userIcon} />
-                            </Pressable>
-                        );
-                    }}
-                >
-                    <Menu.Item onPress={onSavedDogsClick}>
-                        <Text style={styles.menuItem}>saved dogs</Text>
-                    </Menu.Item>
-                    <Menu.Item onPress={onAdoptedDogsClick}>
-                        <Text style={styles.menuItem}>my adoptions</Text>
-                    </Menu.Item>
-                    <Menu.Item onPress={() => setState({ ...state, user: null, token: '' })}>
-                        <Text style={styles.menuItem}>log out</Text>
-                    </Menu.Item>
-                </Menu>
-            </Box>
+            <Menu
+                w="190"
+                style={{
+                    backgroundColor: '#6B62FF',
+                    marginTop: -20,
+                    marginRight: 10,
+                }}
+                trigger={(triggerProps) => {
+                    return (
+                        <Pressable accessibilityLabel="More options menu" {...triggerProps}>
+                            <Image style={{ width: 45, height: 45 }} source={userIcon} />
+                        </Pressable>
+                    );
+                }}
+            >
+                {!isAdmin() && (
+                    <>
+                        <Menu.Item onPress={onSavedDogsClick}>
+                            <Text style={styles.menuItem}>saved dogs</Text>
+                        </Menu.Item>
+                        <Menu.Item onPress={onAdoptedDogsClick}>
+                            <Text style={styles.menuItem}>my adoptions</Text>
+                        </Menu.Item>
+                    </>
+                )}
+                <Menu.Item onPress={() => setState({ ...state, user: null, token: '' })}>
+                    <Text style={styles.menuItem}>log out</Text>
+                </Menu.Item>
+            </Menu>
         );
     };
 
