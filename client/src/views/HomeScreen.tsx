@@ -10,6 +10,7 @@ import { event } from 'react-native-reanimated';
 
 const HomeScreen = ({ navigation }) => {
     const [data, setData] = useState([]);
+    const [displayData, setDisplayData] = useState([]);
     const isFocused = useIsFocused();
     const [openBreed, setOpenBreed] = useState(false);
     const [openGender, setOpenGender] = useState(false);
@@ -32,7 +33,7 @@ const HomeScreen = ({ navigation }) => {
     const _generateSelectFields = (values) => values.map(_generateSelectItem);
 
     const filterItems = {
-        breed: _generateSelectFields(['labrador', 'teckel']),
+        breed: _generateSelectFields(['labrador', 'teckel', 'german']),
         minAge: _generateSelectFields(age),
         maxAge: _generateSelectFields(age),
         city: _generateSelectFields(['timisoara', 'arad']),
@@ -46,20 +47,115 @@ const HomeScreen = ({ navigation }) => {
     const [minAge, setMinAge] = useState<number>();
 
     useEffect(() => {
-        fetchDogs();
+        console.log('maine');
+        if (isFocused) {
+            fetchDogs();
+            setBreed('');
+            setMinAge(undefined);
+            setMaxAge(undefined);
+            setGender('');
+            setCity('');
+        }
     }, [isFocused]);
+
+    console.log(data.length);
 
     const fetchDogs = async () => {
         try {
             const result = await axios.get('http://localhost:8000/dogs');
 
-            setData(result.data);
+            const promisesCities = result.data.map(async (item) => await getCity(item.shelterId));
+
+            const cities = await Promise.all(promisesCities);
+
+            const resultWithCities = result.data.map((item, index) => ({
+                ...item,
+                city: cities[index],
+            }));
+
+            console.log(
+                'res: ',
+                resultWithCities.map((x) => x.city)
+            );
+
+            setData(resultWithCities);
+            setDisplayData(resultWithCities);
         } catch (err) {
             console.log('err: ', err);
         }
     };
 
     console.log(breed, gender, city, minAge, maxAge);
+
+    const getCity = async (id) => {
+        try {
+            const result = await axios.get(`http://localhost:8000/api/shelter/${id}`);
+
+            if (result) {
+                return result.data.city;
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    // const testFct = async (id)=>{
+    //     const result = await getCity(id);
+
+    //     return result === city;
+    // }
+
+    const filterByCity = (array) => {
+        if (city !== '') {
+            console.log('city');
+            return array.filter((item) => item.city === city);
+        }
+        return array;
+    };
+
+    const filterByBreed = (array) => {
+        if (breed !== '') {
+            return array.filter((item) => item.breed === breed);
+        }
+        return array;
+    };
+
+    const filterByGender = (array) => {
+        if (gender !== '') {
+            return array.filter((item) => item.gender === gender);
+        }
+        return array;
+    };
+
+    const filterByMinAge = (array) => {
+        if (minAge !== undefined) {
+            console.log('min age');
+            console.log(array.map((x) => x.age));
+            return array.filter((item) => item.age >= minAge);
+        }
+        return array;
+    };
+
+    const filterByMaxAge = (array) => {
+        if (maxAge !== undefined) {
+            return array.filter((item) => item.age <= maxAge);
+        }
+        return array;
+    };
+
+    console.log('is foc: ', isFocused);
+
+    useEffect(() => {
+            console.log('filter ...');
+            let filteredData = data;
+            filteredData = filterByBreed(filteredData);
+            filteredData = filterByCity(filteredData);
+            filteredData = filterByGender(filteredData);
+            filteredData = filterByMaxAge(filteredData);
+            filteredData = filterByMinAge(filteredData);
+
+            setDisplayData(filteredData);
+    }, [breed, city, minAge, maxAge, gender, isFocused]);
 
     const _renderHeader = () => {
         return (
@@ -82,10 +178,10 @@ const HomeScreen = ({ navigation }) => {
                         width: 320,
                     }}
                     dropDownContainerStyle={{
-                        height: 120
+                        height: 120,
                     }}
                     textStyle={{
-                        fontSize: 17
+                        fontSize: 17,
                     }}
                     dropDownDirection="BOTTOM"
                     open={open}
@@ -102,10 +198,10 @@ const HomeScreen = ({ navigation }) => {
         return (
             <View style={{ height: 410, alignSelf: 'center', zIndex: 20000 }}>
                 {_renderFilter('breed', breed, setBreed, openBreed, setOpenBreed, 15000)}
-                {_renderFilter('gender', gender, setGender, openGender, setOpenGender, 14000)} 
+                {_renderFilter('gender', gender, setGender, openGender, setOpenGender, 14000)}
                 {_renderFilter('city', city, setCity, openShelterCity, setOpenShelterCity, 13000)}
                 {_renderFilter('minAge', minAge, setMinAge, openMinAge, setOpenMinAge, 12000)}
-                {_renderFilter('maxAge', maxAge, setMaxAge, openMaxAge, setOpenMaxAge, 11000)} 
+                {_renderFilter('maxAge', maxAge, setMaxAge, openMaxAge, setOpenMaxAge, 11000)}
             </View>
         );
     };
@@ -113,7 +209,7 @@ const HomeScreen = ({ navigation }) => {
     const _renderDogs = () => {
         return (
             <View style={styles.dogsView}>
-                {data.map((singleData, index) => {
+                {displayData.map((singleData, index) => {
                     const name = singleData.name;
                     const breed = singleData.breed;
                     const gender = singleData.gender;
@@ -148,7 +244,6 @@ const HomeScreen = ({ navigation }) => {
             </View>
 
             <View>{_renderHeader()}</View>
-            {/* <View></View> */}
             <ScrollView>
                 {_renderFilters()}
                 {_renderDogs()}
