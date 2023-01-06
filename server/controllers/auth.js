@@ -22,6 +22,11 @@ export const signup = async (req, res) => {
                 error: 'Email is required',
             });
         }
+        if (!role) {
+            return res.json({
+                error: 'role is required',
+            });
+        }
         if (!password || password.length < 6) {
             return res.json({
                 error: 'Password is required and should be 6 characters long',

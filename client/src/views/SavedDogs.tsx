@@ -26,7 +26,7 @@ const SavedDogsScreen = ({ navigation }) => {
 
             const promises = result.data.map((el) => {
                 const request = `http://localhost:8000/dogImage/${el.dogId}`;
-
+                
                 return axios.get(request);
             });
 
@@ -51,15 +51,16 @@ const SavedDogsScreen = ({ navigation }) => {
     const _renderDogs = () => {
         return (
             <View style={styles.dogsView}>
-                {savedDogs.map((singleData, index) => {
-                    const name = singleData.name;
-                    const breed = singleData.breed;
-                    const gender = singleData.gender;
-                    const temper = singleData.temper;
-                    const age = singleData.age;
-                    const shelterId = singleData.shelterId;
-                    const isAdopted = singleData.isAdopted;
-                    return (
+                {savedDogs.map((singleData, index) =>  {
+                    
+                    const name = singleData?.name;
+                    const breed = singleData?.breed;
+                    const gender = singleData?.gender;
+                    const temper = singleData?.temper;
+                    const age = singleData?.age;
+                    const shelterId = singleData?.shelterId;
+                    const isAdopted = singleData?.isAdopted;
+                    return singleData && (
                         <DogCard
                             navigation={navigation}
                             dogId={singleData._id}

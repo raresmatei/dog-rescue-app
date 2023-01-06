@@ -14,6 +14,10 @@ const Navbar = ({ navigation }) => {
         navigation.navigate('HomeScreen');
     };
 
+    const onUploadClick = () => {
+        navigation.navigate('UploadDogScreen');
+    };
+
     const _renderMenu = () => {
         return (
             <Menu
@@ -35,6 +39,11 @@ const Navbar = ({ navigation }) => {
                 <Menu.Item onPress={onHomelick}>
                     <Text style={styles.menuItem}>home</Text>
                 </Menu.Item>
+                {isAdmin() && (
+                    <Menu.Item onPress={onUploadClick}>
+                        <Text style={styles.menuItem}>upload a dog</Text>
+                    </Menu.Item>
+                )}
             </Menu>
         );
     };

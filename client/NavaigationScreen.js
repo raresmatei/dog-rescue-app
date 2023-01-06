@@ -9,6 +9,7 @@ import RegisterScreen from './src/views/RegisterScreen';
 import SavedDogs from './src/views/SavedDogs';
 import DogDetailsScreen from './src/views/DogDetailsScreen';
 import AdoptedDogsScreen from './src/views/AdoptedDogsScreen';
+import UploadDog from './src/views/UploadDog';
 
 const Stack = createNativeStackNavigator();
 
@@ -21,7 +22,7 @@ const NavaigationScreen = () => {
 
     return (
         <Stack.Navigator
-            initialRouteName="HomeScreen"
+            initialRouteName="UploadDogScreen"
             screenOptions={{
                 headerShown: false,
             }}
@@ -32,6 +33,7 @@ const NavaigationScreen = () => {
                     <Stack.Screen name="SavedDogsScreen" component={SavedDogs} />
                     <Stack.Screen name="DogDetailsScreen">{(props) => <DogDetailsScreen {...props} />}</Stack.Screen>
                     <Stack.Screen name="AdoptedDogsScreen" component={AdoptedDogsScreen} />
+                    {state.user.role === 'admin' && <Stack.Screen name="UploadDogScreen" component={UploadDog} />}
                 </>
             ) : (
                 <>

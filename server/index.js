@@ -7,13 +7,15 @@ const morgan = require('morgan');
 const connectionImageDb = require('./imagedb');
 import { ImageModel } from './models/image.model';
 import multer from 'multer';
+const bodyParser = require('body-parser');
 const fs = require('fs');
 import { encode as btoa } from 'base-64';
 
 const app = express();
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.json({ limit: '50mb', extended: true }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true, parameterLimit: 50000 }));
+app.use(bodyParser.text({ limit: '200mb' }));
 app.use(cors());
 app.use(morgan('dev'));
 
@@ -30,15 +32,16 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-app.post('/dogs', upload.single('testImage'), (req, res) => {
-    const buffer = fs.readFileSync('uploads/' + req.file.filename);
-    const base64String = btoa(
-        new Uint8Array(buffer).reduce(function (data, byte) {
-            return data + String.fromCharCode(byte);
-        }, '')
-    );
+app.post('/dogs', (req, res) => {
+    // const buffer = fs.readFileSync(req.body.image.slice(8));
 
-    const { name, breed, age, temper, gender, shelterId } = req.body;
+    // const base64String = btoa(
+    //     new Uint8Array(buffer).reduce(function (data, byte) {
+    //         return data + String.fromCharCode(byte);
+    //     }, '')
+    // );
+    console.log('here');
+    const { name, breed, age, temper, gender, shelterId, image } = req.body;
 
     const dog = ImageModel({
         name,
@@ -49,10 +52,9 @@ app.post('/dogs', upload.single('testImage'), (req, res) => {
         shelterId,
         isAdopted: false,
         personId: null,
-        base64StringImage: base64String,
+        base64StringImage: image,
     });
 
-    console.log('base 64 string: ', base64String);
     dog.save()
         .then((res) => {
             console.log('image is saved');
@@ -67,7 +69,7 @@ app.get('/dogs/:personId', async (req, res) => {
     console.log('query: ', req.params.personId);
     try {
         const personId = req.params.personId;
-        
+
         const allData = await ImageModel.find({ personId: personId });
 
         res.json(allData);
@@ -76,7 +78,7 @@ app.get('/dogs/:personId', async (req, res) => {
     }
 });
 
-app.get('/shleter/dogs/:shelterID', async (req, res)=>{
+app.get('/shleter/dogs/:shelterID', async (req, res) => {
     try {
         const shelterId = req.params.shelterID;
 
@@ -86,11 +88,11 @@ app.get('/shleter/dogs/:shelterID', async (req, res)=>{
     } catch (error) {
         console.log(error);
     }
-})
+});
 
 app.get('/dogs', async (req, res) => {
     try {
-        const allData = await ImageModel.find({isAdopted: false});
+        const allData = await ImageModel.find({ isAdopted: false });
 
         res.json(allData);
     } catch (err) {
@@ -120,8 +122,7 @@ app.patch('/dogImage/:dogId', async (req, res) => {
             file.personId = userId;
 
             file.save();
-        }
-        else{
+        } else {
             res.send('not found');
         }
 
