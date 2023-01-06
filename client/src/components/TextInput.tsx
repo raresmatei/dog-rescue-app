@@ -6,9 +6,10 @@ interface TextInputProperties {
     type: any;
     style: object;
     onChange?: Function;
+    value?: any
 }
 
-const TextInput = ({ placeholder, type, style, onChange}: TextInputProperties) => {
+const TextInput = ({ placeholder, type, style, onChange, value}: TextInputProperties) => {
     const theme = extendTheme({
         components: {
             Input: {
@@ -35,6 +36,7 @@ const TextInput = ({ placeholder, type, style, onChange}: TextInputProperties) =
                 variant="rounded"
                 type={type}
                 placeholder={placeholder}
+                value={value}
             />
         </NativeBaseProvider>
     );

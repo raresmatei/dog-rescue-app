@@ -58,15 +58,19 @@ app.post('/dogs', (req, res) => {
     dog.save()
         .then((res) => {
             console.log('image is saved');
+            // res.json(dog);
         })
         .catch((err) => {
             console.log(err, 'error has occur');
+            res.json({
+                error: 'file is too large',
+            });
+
         });
-    res.send('image is saved');
+    res.send(dog);
 });
 
 app.get('/dogs/:personId', async (req, res) => {
-    console.log('query: ', req.params.personId);
     try {
         const personId = req.params.personId;
 
@@ -94,18 +98,16 @@ app.get('/dogs', async (req, res) => {
     try {
         const allData = await ImageModel.find({ isAdopted: false });
 
-        res.json(allData);
+        res.status(200).json(allData);
     } catch (err) {
         console.log('err : ', err);
     }
 });
 
 app.get('/dogImage/:dogId', async (req, res) => {
-    console.log(req.params);
     try {
         const file = await ImageModel.findOne({ _id: req.params.dogId });
 
-        console.log('file: ', file);
         res.json(file);
     } catch (error) {
         res.send('not found');
@@ -131,6 +133,25 @@ app.patch('/dogImage/:dogId', async (req, res) => {
         res.send('not found');
     }
 });
+
+// app.patch('/dogImage/:dogId/:likeValue', async (req, res) => {
+//     const { userId } = req.body;
+//     try {
+//         const file = await ImageModel.findOne({ _id: req.params.dogId });
+
+//         if (file) {
+//             file.likeCount = file.likeCount + Number(req.params.likeValue);
+
+//             file.save();
+//         } else {
+//             res.send('not found');
+//         }
+
+//         res.send(file);
+//     } catch (error) {
+//         res.send('not found');
+//     }
+// });
 
 app.delete('/dogImage/:dogId', async (req, res) => {
     try {

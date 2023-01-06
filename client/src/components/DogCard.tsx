@@ -12,7 +12,6 @@ import Animated, {
 } from 'react-native-reanimated';
 import axios from 'axios';
 import { AuthContext } from '../context/auth';
-import { isNamedExportBindings } from 'typescript';
 import BasicButton from './Button';
 
 const LikeButton = ({ dogId }) => {
@@ -60,9 +59,11 @@ const LikeButton = ({ dogId }) => {
             dogId: dogId,
         };
         if (liked.value == 0) {
+            // await axios.patch(`http://localhost:8000/dogImage/${dogId}/${1}`);
             await axios.post('http://localhost:8000/savedDogs', body);
         }
         if (liked.value == 1) {
+            // await axios.patch(`http://localhost:8000/dogImage/${dogId}/${-1}`);
             const deleteRequest = `http://localhost:8000/savedDogs/${body.userId}/${body.dogId}`;
             await axios.delete(deleteRequest);
         }
@@ -82,7 +83,7 @@ const LikeButton = ({ dogId }) => {
     );
 };
 
-const DogCard = ({ navigation, name, image, dogId, breed, gender, age, temper, shelterId, isAdopted, onDelete }) => {
+const DogCard = ({ navigation, name, image, dogId, breed, gender, age, temper, shelterId, isAdopted, onDelete, likeCount }) => {
     const [state, setState] = useContext(AuthContext);
 
     const isAdmin = () => state.user.role === 'admin';

@@ -60,7 +60,7 @@ const SavedDogsScreen = ({ navigation }) => {
                     const age = singleData?.age;
                     const shelterId = singleData?.shelterId;
                     const isAdopted = singleData?.isAdopted;
-                    return singleData && (
+                    return singleData && !singleData.isAdopted && (
                         <DogCard
                             navigation={navigation}
                             dogId={singleData._id}

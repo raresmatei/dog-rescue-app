@@ -1,15 +1,14 @@
-import { Image, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
-import React, { useContext, useState } from 'react';
+import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
 import Header from '../components/Header';
 import TextInput from '../components/TextInput';
-import { NativeBaseProvider, Radio } from 'native-base';
 import BasicButton from '../components/Button';
 import axios from 'axios';
-import globalStyles from '../globalStyles/styles';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthContext } from '../context/auth';
 import Navbar from '../components/Navbar';
 import * as ImagePicker from 'expo-image-picker';
+import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
+import { useIsFocused } from '@react-navigation/native';
 
 const UploadDog = ({ navigation }) => {
     const [error, setError] = useState(false);
@@ -23,6 +22,23 @@ const UploadDog = ({ navigation }) => {
         image: null,
     });
     const [state, setState] = useContext(AuthContext);
+    const isFocused = useIsFocused();
+
+    useEffect(()=>{
+        console.log('here');
+        if(isFocused){
+            setInputFields({
+                name: '',
+                breed: '',
+                age: '',
+                temper: '',
+                gender: '',
+                image: null,
+            });
+            setErrorMessage('');
+            setError(false);
+        }
+    }, [isFocused])
 
     const handleChangeName = (value) => {
         setInputFields({
@@ -77,11 +93,11 @@ const UploadDog = ({ navigation }) => {
     const _renderFields = (): JSX.Element => {
         return (
             <View style={{ width: 300, height: 280 }}>
-                <TextInput onChange={handleChangeName} style={styles.input} placeholder="name" type="normal" />
-                <TextInput onChange={handleChangeBreed} style={styles.input} placeholder="breed" type="normal" />
-                <TextInput onChange={handleChangeAge} style={styles.input} placeholder="age" type="normal" />
-                <TextInput onChange={handleChangeTemper} style={styles.input} placeholder="temper" type="normal" />
-                <TextInput onChange={handleChangeGender} style={styles.input} placeholder="gender" type="normal" />
+                <TextInput onChange={handleChangeName} style={styles.input} value={inputFields.name} placeholder="name" type="normal" />
+                <TextInput onChange={handleChangeBreed} style={styles.input} value={inputFields.breed} placeholder="breed" type="normal" />
+                <TextInput onChange={handleChangeAge} style={styles.input} placeholder="age" type="normal" value={inputFields.age}/>
+                <TextInput onChange={handleChangeTemper} style={styles.input} placeholder="temper" type="normal" value={inputFields.temper}/>
+                <TextInput onChange={handleChangeGender} style={styles.input} placeholder="gender" type="normal" value={inputFields.gender}/>
                 {/* <Input /> */}
             </View>
         );
@@ -113,16 +129,11 @@ const UploadDog = ({ navigation }) => {
             shelterId: state.user._id,
         };
 
-        console.log(requestPayload.image.length);
-
         const resp = await axios.post('http://localhost:8000/dogs', requestPayload);
 
         if (resp.data.error) {
-            setError(true);
-            setErrorMessage(resp.data.error);
+            alert(resp.data.error);
         } else {
-            setError(false);
-            setErrorMessage('');
             alert('uploaded successfully');
             navigation.navigate('HomeScreen');
         }
@@ -142,11 +153,25 @@ const UploadDog = ({ navigation }) => {
             quality: 1,
         });
 
-        console.log('base 64 len: ', result.assets[0].base64.length);
+
+        // const compressed = await _compressImage(result.assets[0]);
+
+        // console.log('compressed: ', compressed.base64.length);
 
         if (!result.canceled) {
             handleChangePhoto(result.assets[0].base64);
         }
+    };
+
+    const _compressImage = async (image) => {
+        const manipResult = await manipulateAsync(
+            image.localUri || image.uri,
+            [{ rotate: 0 }],
+            { compress: 0.25, format: SaveFormat.PNG, base64: true }
+        );
+
+        return manipResult;
+        //   setImage(manipResult);
     };
 
     const _renderButtons = () => {
@@ -164,6 +189,7 @@ const UploadDog = ({ navigation }) => {
                     />
                 )}
                 <BasicButton onClick={onSubmit} style={[styles.button, styles.loginButton]} title="UPLOAD" />
+                {error && _renderError(errorMessage)}
             </View>
         );
     };

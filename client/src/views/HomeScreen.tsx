@@ -44,6 +44,7 @@ const HomeScreen = ({ navigation }) => {
     const [minAge, setMinAge] = useState<number>();
 
     useEffect(() => {
+        console.log('use effect');
         if (isFocused || lastDeletedDog !== '') {
             fetchDogs();
             setBreed('');
