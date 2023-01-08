@@ -33,14 +33,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 app.post('/dogs', (req, res) => {
-    // const buffer = fs.readFileSync(req.body.image.slice(8));
 
-    // const base64String = btoa(
-    //     new Uint8Array(buffer).reduce(function (data, byte) {
-    //         return data + String.fromCharCode(byte);
-    //     }, '')
-    // );
-    console.log('here');
     const { name, breed, age, temper, gender, shelterId, image } = req.body;
 
     const dog = ImageModel({
@@ -156,7 +149,6 @@ app.patch('/dogImage/:dogId', async (req, res) => {
 app.delete('/dogImage/:dogId', async (req, res) => {
     try {
         const file = await ImageModel.deleteOne({ _id: req.params.dogId });
-        console.log(file);
         res.send('deleted successfuly image');
     } catch (error) {
         res.send('not found');

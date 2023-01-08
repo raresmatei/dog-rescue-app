@@ -25,7 +25,6 @@ const UploadDog = ({ navigation }) => {
     const isFocused = useIsFocused();
 
     useEffect(()=>{
-        console.log('here');
         if(isFocused){
             setInputFields({
                 name: '',
@@ -152,11 +151,6 @@ const UploadDog = ({ navigation }) => {
             aspect: [4, 3],
             quality: 1,
         });
-
-
-        // const compressed = await _compressImage(result.assets[0]);
-
-        // console.log('compressed: ', compressed.base64.length);
 
         if (!result.canceled) {
             handleChangePhoto(result.assets[0].base64);

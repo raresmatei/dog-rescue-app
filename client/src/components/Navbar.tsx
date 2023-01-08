@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Box, HamburgerIcon, Menu, NativeBaseProvider } from 'native-base';
 import React, { useContext } from 'react';
 import { Pressable, Image, StyleSheet, Text, View } from 'react-native';
@@ -13,7 +14,7 @@ const Navbar = ({ navigation }) => {
     const onHomelick = () => {
         navigation.navigate('HomeScreen');
     };
-
+    
     const onUploadClick = () => {
         navigation.navigate('UploadDogScreen');
     };
@@ -83,7 +84,7 @@ const Navbar = ({ navigation }) => {
                         </Menu.Item>
                     </>
                 )}
-                <Menu.Item onPress={() => setState({ ...state, user: null, token: '' })}>
+                <Menu.Item onPress={() => {setState({ ...state, user: null, token: '' }); AsyncStorage.clear()}}>
                     <Text style={styles.menuItem}>log out</Text>
                 </Menu.Item>
             </Menu>

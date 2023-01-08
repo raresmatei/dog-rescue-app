@@ -5,7 +5,6 @@ import jwt from 'jsonwebtoken';
 require('dotenv').config();
 
 export const signup = async (req, res) => {
-    console.log('Signup Hit');
     try {
         // validation
         const { name, email, password, confirmPassword, city, street, number, role } = req.body;
@@ -49,8 +48,6 @@ export const signup = async (req, res) => {
         const hashedPassword = await hashPassword(password);
         try {
             const user = new User({ name, email, password: hashedPassword, city, street, number, role });
-
-            console.log('role: ', user.role);
 
             await user.save((err, res) => {
                 if (err) {
@@ -122,7 +119,6 @@ export const getShelterAdressById = async (req, res) => {
     try {
         const { id } = req.params;
 
-        console.log('id: ', id);
         // check if our db has user with that email
         const user = await User.findOne({ _id: id, role: 'admin' });
         if (!user) {

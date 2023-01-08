@@ -18,6 +18,9 @@ const HomeScreen = ({ navigation }) => {
     const [openShelterCity, setOpenShelterCity] = useState(false);
     const [openMinAge, setOpenMinAge] = useState(false);
     const [openMaxAge, setOpenMaxAge] = useState(false);
+    const [openIsAdopted, setOpenIsAdopted] = useState(false);
+
+    console.log(state);
 
     const [lastDeletedDog, setLastDeletedDog] = useState('');
 
@@ -35,6 +38,10 @@ const HomeScreen = ({ navigation }) => {
         maxAge: _generateSelectFields(age),
         city: _generateSelectFields(['timisoara', 'arad']),
         gender: _generateSelectFields(['male', 'female']),
+        isAdopted: [
+            { label: 'false', value: false },
+            { label: 'true', value: true },
+        ],
     };
 
     const [breed, setBreed] = useState<string>('');
@@ -42,9 +49,9 @@ const HomeScreen = ({ navigation }) => {
     const [city, setCity] = useState<string>('');
     const [maxAge, setMaxAge] = useState<number>();
     const [minAge, setMinAge] = useState<number>();
+    const [isAdopted, setIsAdopted] = useState(null);
 
     useEffect(() => {
-        console.log('use effect');
         if (isFocused || lastDeletedDog !== '') {
             fetchDogs();
             setBreed('');
@@ -52,6 +59,7 @@ const HomeScreen = ({ navigation }) => {
             setMaxAge(undefined);
             setGender('');
             setCity('');
+            setIsAdopted(null);
         }
     }, [isFocused, lastDeletedDog]);
 
@@ -131,6 +139,15 @@ const HomeScreen = ({ navigation }) => {
         return array;
     };
 
+    const filterByItsAdopted = (array) => {
+        if (isAdopted !== null) {
+            return array.filter((item) => item.isAdopted === isAdopted);
+        }
+        return array;
+    };
+
+
+
     useEffect(() => {
         let filteredData = data;
         filteredData = filterByBreed(filteredData);
@@ -138,9 +155,10 @@ const HomeScreen = ({ navigation }) => {
         filteredData = filterByGender(filteredData);
         filteredData = filterByMaxAge(filteredData);
         filteredData = filterByMinAge(filteredData);
+        filteredData = filterByItsAdopted(filteredData);
 
         setDisplayData(filteredData);
-    }, [breed, city, minAge, maxAge, gender, isFocused]);
+    }, [breed, city, minAge, maxAge, gender, isFocused, isAdopted]);
 
     const _renderHeader = () => {
         return (
@@ -182,12 +200,14 @@ const HomeScreen = ({ navigation }) => {
     const filtersHeight = isAdmin() ? 340 : 410;
     const _renderFilters = () => {
         return (
-            <View style={{ height: filtersHeight, alignSelf: 'center', zIndex: 20000 }}>
+            <View style={{ height: 410, alignSelf: 'center', zIndex: 20000 }}>
                 {_renderFilter('breed', breed, setBreed, openBreed, setOpenBreed, 15000)}
                 {_renderFilter('gender', gender, setGender, openGender, setOpenGender, 14000)}
                 {!isAdmin() && _renderFilter('city', city, setCity, openShelterCity, setOpenShelterCity, 13000)}
                 {_renderFilter('minAge', minAge, setMinAge, openMinAge, setOpenMinAge, 12000)}
                 {_renderFilter('maxAge', maxAge, setMaxAge, openMaxAge, setOpenMaxAge, 11000)}
+                {isAdmin() &&
+                    _renderFilter('isAdopted', isAdopted, setIsAdopted, openIsAdopted, setOpenIsAdopted, 10000)}
             </View>
         );
     };

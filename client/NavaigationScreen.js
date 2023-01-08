@@ -16,13 +16,11 @@ const Stack = createNativeStackNavigator();
 const NavaigationScreen = () => {
     const [state, setState] = useContext(AuthContext);
 
-    console.log('context state: ', state);
-
     const authenticated = state && state.token !== '' && state.user !== null;
 
     return (
         <Stack.Navigator
-            initialRouteName="UploadDogScreen"
+            initialRouteName="HomeScreen"
             screenOptions={{
                 headerShown: false,
             }}
