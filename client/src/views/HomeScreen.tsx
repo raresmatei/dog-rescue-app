@@ -20,7 +20,7 @@ const HomeScreen = ({ navigation }) => {
     const [openMaxAge, setOpenMaxAge] = useState(false);
     const [openIsAdopted, setOpenIsAdopted] = useState(false);
 
-    console.log(state);
+    // console.log(state);
 
     const [lastDeletedDog, setLastDeletedDog] = useState('');
 

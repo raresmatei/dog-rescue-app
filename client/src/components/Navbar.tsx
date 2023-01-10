@@ -1,8 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Box, HamburgerIcon, Menu, NativeBaseProvider } from 'native-base';
+import { HamburgerIcon, Menu, NativeBaseProvider } from 'native-base';
 import React, { useContext } from 'react';
 import { Pressable, Image, StyleSheet, Text, View } from 'react-native';
-import { RollInLeft } from 'react-native-reanimated';
 import userIcon from '../../assets/icons8-user-50.png';
 import { AuthContext } from '../context/auth';
 

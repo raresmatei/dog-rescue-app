@@ -48,10 +48,10 @@ app.post('/dogs', (req, res) => {
     });
 
     dog.save()
-        .then((res) => {
+        .then(() => {
             console.log('OKKKKkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk');
             console.log('image is saved');
-            // res.json(dog);
+            res.status(200).json(dog);
         })
         .catch((err) => {
             console.log('ERrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr');
@@ -61,7 +61,6 @@ app.post('/dogs', (req, res) => {
             });
         });
 
-    res.send(dog);
 });
 
 app.get('/dogs/:personId', async (req, res) => {
@@ -120,7 +119,7 @@ app.patch('/dogImage/:dogId', async (req, res) => {
             file.save();
         } else {
             res.send('not found');
-        }
+    }
 
         res.send(file);
     } catch (error) {

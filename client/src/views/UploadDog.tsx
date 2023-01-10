@@ -130,7 +130,7 @@ const UploadDog = ({ navigation }) => {
 
         const resp = await axios.post('http://localhost:8000/dogs', requestPayload);
 
-        console.log('err: ', resp.data.error)
+        // console.log('err: ', resp.data)
 
         if (resp.data.error) {
             alert(resp.data.error);
