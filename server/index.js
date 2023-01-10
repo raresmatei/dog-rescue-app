@@ -33,7 +33,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 app.post('/dogs', (req, res) => {
-
     const { name, breed, age, temper, gender, shelterId, image } = req.body;
 
     const dog = ImageModel({
@@ -50,16 +49,18 @@ app.post('/dogs', (req, res) => {
 
     dog.save()
         .then((res) => {
+            console.log('OKKKKkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk');
             console.log('image is saved');
             // res.json(dog);
         })
         .catch((err) => {
+            console.log('ERrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr');
             console.log(err, 'error has occur');
             res.json({
                 error: 'file is too large',
             });
-
         });
+
     res.send(dog);
 });
 
@@ -148,8 +149,11 @@ app.patch('/dogImage/:dogId', async (req, res) => {
 
 app.delete('/dogImage/:dogId', async (req, res) => {
     try {
+        console.log('delte ..');
         const file = await ImageModel.deleteOne({ _id: req.params.dogId });
         res.send('deleted successfuly image');
+
+        console.log('deleted');
     } catch (error) {
         res.send('not found');
     }
