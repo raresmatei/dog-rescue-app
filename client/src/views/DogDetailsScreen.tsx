@@ -105,7 +105,7 @@ const DogDetailsScreen = ({ navigation, route }): ReactElement => {
                     {_renderDog()}
                     {_renderDogDetails()}
                     {_renderShelterDetails()}
-                    {!isAdopted && _renderButton()}
+                    {!isAdopted && state.user.role!=='admin' && _renderButton()}
                 </View>
             </ScrollView>
         );
