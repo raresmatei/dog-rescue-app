@@ -16,7 +16,7 @@ const SavedDogsScreen = ({ navigation }) => {
     useEffect(() => {
         if (isFocused) {
             fetchDogs();
-        }
+    }
     }, [isFocused]);
 
     const fetchDogs = async () => {
